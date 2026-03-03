@@ -1,0 +1,10 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.bak
+
+# OneDrive sync artifacts
+desktop.ini

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Financial Services — Sector 01 | Bravo Governance Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--off-white:#f4f2ed;--mid:#5a5a5a;--light:#9a9a9a;--accent:#c8402a;--accent-2:#2a5c8a;--accent-3:#3a6b4a;--panel:#111111;--panel-border:#2a2a2a;--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--serif:'IBM Plex Serif',serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--off-white);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden;}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15;letter-spacing:-0.02em;}
+h2{font-family:var(--sans);font-weight:500;font-size:1.15rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--off-white);}
+h3{font-family:var(--mono);font-weight:400;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);}
+h4{font-family:var(--sans);font-weight:500;font-size:1rem;color:var(--off-white);}
+p{font-family:var(--sans);font-weight:300;color:#c8c4bc;line-height:1.75;}
+a{text-decoration:none;}
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+section{border-top:1px solid var(--panel-border);padding:4rem 0;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,0.97);border-bottom:1px solid var(--panel-border);backdrop-filter:blur(8px);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 2rem;max-width:1200px;margin:0 auto;}
+.nav-brand{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--off-white);text-decoration:none;}
+.nav-brand .br{color:var(--accent);}
+.nav-links{display:flex;gap:1.75rem;list-style:none;}
+.nav-links a{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);text-decoration:none;transition:color 0.2s;padding-bottom:2px;border-bottom:1px solid transparent;}
+.nav-links a:hover,.nav-links a.active{color:var(--off-white);border-bottom-color:var(--accent-2);}
+.nav-tag{font-family:var(--mono);font-size:0.62rem;color:var(--accent);border:1px solid var(--accent);padding:0.2rem 0.6rem;letter-spacing:0.1em;white-space:nowrap;}
+.page-header{padding:7rem 0 4rem;border-top:none;background:repeating-linear-gradient(0deg,transparent,transparent 59px,var(--panel-border) 59px,var(--panel-border) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,var(--panel-border) 59px,var(--panel-border) 60px),var(--black);}
+.page-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+.page-label::before{content:'';display:block;width:2.5rem;height:1px;background:var(--accent);}
+.page-intro{font-size:1rem;color:#9a9690;max-width:620px;border-left:2px solid var(--accent-2);padding-left:1.25rem;font-weight:300;line-height:1.75;margin-top:1.25rem;}
+.related-block{background:var(--panel);border:1px solid var(--panel-border);padding:1.5rem 2rem;margin-top:3rem;}
+.related-block h3{margin-bottom:1rem;}
+.related-links{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.related-link{font-family:var(--mono);font-size:0.65rem;color:var(--accent-2);border:1px solid var(--panel-border);padding:0.3rem 0.75rem;text-decoration:none;transition:border-color 0.2s,color 0.2s;}
+.related-link:hover{border-color:var(--accent-2);color:var(--off-white);}
+footer{background:#050505;border-top:1px solid var(--panel-border);padding:4rem 0 2rem;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-brand p{font-size:0.82rem;color:var(--mid);margin-top:0.75rem;max-width:280px;}
+.footer-col h4{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-bottom:1rem;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{padding:0.3rem 0;}
+.footer-col ul li a{font-family:var(--mono);font-size:0.7rem;color:#4a4a4a;text-decoration:none;transition:color 0.2s;}
+.footer-col ul li a:hover{color:var(--light);}
+.footer-bottom{border-top:1px solid #1a1a1a;padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;}
+.footer-bottom p{font-family:var(--mono);font-size:0.65rem;color:#3a3a3a;}
+
+/* PORTAL */
+.portal-section{border-top:1px solid var(--panel-border);padding:5rem 0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,#0f0f0f 39px,#0f0f0f 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,#0f0f0f 39px,#0f0f0f 40px),#0a0a0a;}
+.portal-eyebrow{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent-2);display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;}
+.portal-eyebrow::before{content:'';width:2rem;height:1px;background:var(--accent-2);}
+.portal-title{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.5vw,2rem);color:var(--off-white);line-height:1.2;margin-bottom:0.75rem;}
+.portal-desc{font-size:0.9rem;color:#7a7a7a;max-width:560px;line-height:1.75;margin-bottom:2.5rem;}
+.portal-note{background:var(--panel);border:1px solid var(--panel-border);border-left:3px solid var(--accent-2);padding:1rem 1.25rem;margin-bottom:2.5rem;font-size:0.8rem;color:var(--mid);line-height:1.65;}
+.portal-note strong{color:var(--accent-2);}
+
+/* PIPELINE ROW */
+.pipeline-row{display:flex;align-items:center;gap:0;background:var(--panel-border);margin-bottom:2.5rem;overflow-x:auto;}
+.pipe-node{background:#0e0e0e;padding:1.1rem 1.25rem;flex:1;min-width:140px;text-align:center;border-right:1px solid var(--panel-border);position:relative;}
+.pipe-node:last-child{border-right:none;}
+.pipe-arrow{position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.75rem;color:var(--accent-2);z-index:2;background:#0e0e0e;padding:0 3px;}
+.pipe-icon{font-size:1.2rem;margin-bottom:0.35rem;display:block;}
+.pipe-name{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:0.2rem;}
+.pipe-role{font-size:0.7rem;color:#4a4a4a;line-height:1.45;}
+
+/* TOOL GRID */
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--panel-border);margin-bottom:2rem;}
+.tool-card{background:var(--panel);padding:2rem;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:background 0.2s;}
+.tool-card:hover{background:#161616;}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.tc-blue::before{background:var(--accent-2);}
+.tc-green::before{background:var(--accent-3);}
+.tc-red::before{background:var(--accent);}
+.tc-purple::before{background:#7a5cb8;}
+.tool-card-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.tool-num{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);}
+.tool-badge{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.15rem 0.5rem;border:1px solid;}
+.badge-live{color:var(--accent-3);border-color:var(--accent-3);background:rgba(58,107,74,0.08);}
+.badge-mod{color:var(--accent-2);border-color:var(--accent-2);background:rgba(42,92,138,0.08);}
+.tool-icon-lg{font-size:2rem;margin-bottom:0.75rem;display:block;}
+.tool-name{font-family:var(--sans);font-weight:600;font-size:1.05rem;color:var(--off-white);margin-bottom:0.3rem;}
+.tool-tagline{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:1rem;}
+.tool-desc{font-size:0.83rem;color:#9a9690;line-height:1.75;margin-bottom:1.25rem;flex:1;}
+.expect-box{background:#0d0d0d;border:1px solid var(--panel-border);padding:1rem 1.25rem;margin-bottom:1.5rem;}
+.tc-blue .expect-box{border-left:2px solid var(--accent-2);}
+.tc-green .expect-box{border-left:2px solid var(--accent-3);}
+.tc-red .expect-box{border-left:2px solid var(--accent);}
+.tc-purple .expect-box{border-left:2px solid #7a5cb8;}
+.expect-label{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-bottom:0.6rem;}
+.expect-list{list-style:none;}
+.expect-list li{font-family:var(--mono);font-size:0.68rem;color:#6a6a6a;padding:0.22rem 0;display:flex;gap:0.5rem;align-items:flex-start;line-height:1.5;border-bottom:1px solid #181818;}
+.expect-list li:last-child{border-bottom:none;}
+.tc-blue   .expect-list li::before{content:'↗';color:var(--accent-2);flex-shrink:0;}
+.tc-green  .expect-list li::before{content:'↗';color:var(--accent-3);flex-shrink:0;}
+.tc-red    .expect-list li::before{content:'↗';color:var(--accent);flex-shrink:0;}
+.tc-purple .expect-list li::before{content:'↗';color:#7a5cb8;flex-shrink:0;}
+.tool-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1.25rem;border-top:1px solid var(--panel-border);gap:1rem;flex-wrap:wrap;}
+.tags{display:flex;flex-wrap:wrap;gap:0.3rem;}
+.tag{font-family:var(--mono);font-size:0.58rem;color:var(--mid);background:#1a1a1a;border:1px solid #2a2a2a;padding:0.12rem 0.45rem;}
+.tool-btn{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--off-white);border:1px solid var(--panel-border);padding:0.5rem 1.1rem;text-decoration:none;white-space:nowrap;transition:border-color 0.2s,color 0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+.tool-btn::after{content:'→';}
+.tc-blue   .tool-btn:hover{border-color:var(--accent-2);color:var(--accent-2);}
+.tc-green  .tool-btn:hover{border-color:var(--accent-3);color:var(--accent-3);}
+.tc-red    .tool-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tc-purple .tool-btn:hover{border-color:#7a5cb8;color:#7a5cb8;}
+
+/* CROSS-SECTOR */
+.cross-sector{background:#0c0c0c;border:1px solid var(--panel-border);border-left:3px solid var(--accent-2);padding:1.5rem 2rem;margin-bottom:2rem;}
+.cs-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent-2);margin-bottom:1.25rem;}
+.cs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;}
+.cs-item{background:var(--panel);border:1px solid var(--panel-border);padding:0.85rem 1rem;}
+.cs-sector{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:0.3rem;}
+.cs-rel{font-size:0.78rem;color:#8a8a8a;line-height:1.5;}
+
+@media(max-width:960px){.tool-grid{grid-template-columns:1fr;}.cs-grid{grid-template-columns:1fr 1fr;}.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.footer-grid{grid-template-columns:1fr;}.nav-links{display:none;}.cs-grid{grid-template-columns:1fr;}.pipeline-row{flex-direction:column;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand"><span class="br">[</span>BRAVO<span class="br">]</span>&nbsp;&nbsp;Agentic Governance Architecture</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="project-reference.html">Stack</a></li>
+      <li><a href="governance-model.html">Governance</a></li>
+      <li><a href="sector-applicability.html" class="active">Sectors</a></li>
+      <li><a href="build-status.html">Build Log</a></li>
+    </ul>
+    <span class="nav-tag">v0.3.1 — ACTIVE BUILD</span>
+  </div>
+</nav>
+
+<section class="page-header">
+  <div class="container">
+    <div class="page-label">Sector 01 — Detail Page</div>
+    <h1>Financial Services</h1>
+    <p class="page-intro">AI agents in financial services must navigate the densest regulatory matrix of any sector. Every output is a potential compliance event. Model hallucination in financial analysis output triggers regulatory liability and enforcement action.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div style="background:#140d0d;border:1px solid #2a1212;border-left:3px solid #c8402a;padding:1rem 1.5rem;margin-bottom:2.5rem;display:flex;gap:0.75rem;align-items:flex-start;">
+      <span style="color:var(--accent);font-size:1rem;flex-shrink:0;">⚑</span>
+      <div>
+        <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:0.3rem;">Primary Risk Vector</div>
+        <div style="font-family:var(--sans);font-size:0.9rem;color:var(--off-white);">Model hallucination in financial analysis output triggers regulatory liability and potential enforcement action</div>
+      </div>
+    </div>
+    <h3 style="margin-bottom:1.25rem;">Agent Use Cases</h3>
+    <div style="background:var(--panel);border-left:3px solid #c8402a;padding:1.5rem 1.75rem;margin-bottom:1px;">
+      <h4 style="font-size:0.92rem;margin-bottom:0.4rem;">Transaction Anomaly Detection</h4>
+      <p style="font-size:0.85rem;">Real-time agent cross-referencing transaction data against behavioural models to surface anomalies for compliance officer review. Every alert carries confidence score, regulatory rule reference, and is logged in the immutable audit trail.</p>
+    </div>
+    <div style="background:var(--panel);border-left:3px solid #c8402a;padding:1.5rem 1.75rem;margin-bottom:1px;">
+      <h4 style="font-size:0.92rem;margin-bottom:0.4rem;">Credit Risk Scoring</h4>
+      <p style="font-size:0.85rem;">Agent synthesising structured data sources to generate provisional credit risk assessments — with mandatory human underwriter review before any credit decision proceeds. Protected characteristics excluded at MCP gate.</p>
+    </div>
+    <div style="background:var(--panel);border-left:3px solid #c8402a;padding:1.5rem 1.75rem;margin-bottom:2rem;">
+      <h4 style="font-size:0.92rem;margin-bottom:0.4rem;">Regulatory Reporting Synthesis</h4>
+      <p style="font-size:0.85rem;">Agent consolidating structured data into draft regulatory submissions (SOX, Basel III, MiFID II) for compliance officer review and sign-off. Agent never submits directly to regulatory bodies.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--panel-border);">
+      <div style="background:var(--panel);padding:2rem;">
+        <h3 style="margin-bottom:1rem;">Governance Controls Required</h3>
+        <ul style="list-style:none;">
+          <li style="font-family:var(--mono);font-size:0.72rem;color:var(--mid);padding:0.35rem 0;border-bottom:1px solid #181818;display:flex;gap:0.5rem;"><span style="color:#3a6b4a;">✓</span>Output confidence threshold enforcement before any downstream system write</li>
+          <li style="font-family:var(--mono);font-size:0.72rem;color:var(--mid);padding:0.35rem 0;border-bottom:1px solid #181818;display:flex;gap:0.5rem;"><span style="color:#3a6b4a;">✓</span>Every invocation tied to regulatory framework reference (SOX Article / Basel Pillar)</li>
+          <li style="font-family:var(--mono);font-size:0.72rem;color:var(--mid);padding:0.35rem 0;border-bottom:1px solid #181818;display:flex;gap:0.5rem;"><span style="color:#3a6b4a;">✓</span>Spend per analysis task capped by business unit authority level</li>
+          <li style="font-family:var(--mono);font-size:0.72rem;color:var(--mid);padding:0.35rem 0;border-bottom:1px solid #181818;display:flex;gap:0.5rem;"><span style="color:#3a6b4a;">✓</span>Model version locked per compliance review cycle — no automatic updates</li>
+          <li style="font-family:var(--mono);font-size:0.72rem;color:var(--mid);padding:0.35rem 0;border-bottom:1px solid #181818;display:flex;gap:0.5rem;"><span style="color:#3a6b4a;">✓</span>Data lineage tracking from source record to agent output</li>
+        </ul>
+      </div>
+      <div style="background:var(--panel);padding:2rem;">
+        <h3 style="margin-bottom:1rem;">Compliance Frameworks</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">SOX</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">Basel III</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">MiFID II</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">Dodd-Frank</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">DORA</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">FCA AI Rules</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">SMCR</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">EU AI Act</span>
+          <span style="font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid var(--panel-border);color:var(--mid);background:#1a1a1a;">GDPR Art.22</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINANCIAL INTELLIGENCE PORTAL -->
+<section class="portal-section" id="tools">
+  <div class="container">
+    <div class="portal-eyebrow">Financial Intelligence Portal</div>
+    <h2 class="portal-title">Integrated Analytics &amp; Optimization Tools</h2>
+    <p class="portal-desc">Four standalone modules extending financial sector governance into active financial engineering, cost optimization, and regulatory analytics. Each tool opens as a fully self-contained system — no login required, no external dependencies.</p>
+
+    <div class="portal-note">
+      <strong>Demonstrator notice:</strong> All tools use static demo data generated in JavaScript. Real deployments require live data feeds, backtesting, institutional compliance review, and validated infrastructure. No output from any linked tool constitutes financial advice or a trading recommendation.
+    </div>
+
+    <!-- PIPELINE ROW -->
+    <div class="pipeline-row">
+      <div class="pipe-node">
+        <span class="pipe-arrow">→</span>
+        <span class="pipe-icon">📥</span>
+        <div class="pipe-name">Data Intake</div>
+        <div class="pipe-role">Market data, transactions, filings ingested &amp; classified</div>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-arrow">→</span>
+        <span class="pipe-icon">🧩</span>
+        <div class="pipe-name">Token Optimizer</div>
+        <div class="pipe-role">Chunking &amp; prompt engineering reduce pipeline cost 40–65%</div>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-arrow">→</span>
+        <span class="pipe-icon">📊</span>
+        <div class="pipe-name">Quant Engine</div>
+        <div class="pipe-role">Black-Scholes, Greeks, position sizing on analytics outputs</div>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-arrow">→</span>
+        <span class="pipe-icon">💰</span>
+        <div class="pipe-name">FinOps Layer</div>
+        <div class="pipe-role">Cost attribution, anomaly detection, spend authority enforcement</div>
+      </div>
+      <div class="pipe-node">
+        <span class="pipe-icon">🛡</span>
+        <div class="pipe-name">Governance Gate</div>
+        <div class="pipe-role">Compliance checks, policy enforcement, audit record sealed</div>
+      </div>
+    </div>
+
+    <!-- TOOL CARDS -->
+    <div class="tool-grid">
+
+      <!-- TOOL 1 -->
+      <div class="tool-card tc-blue">
+        <div class="tool-card-meta">
+          <span class="tool-num">Tool 01 — Primary Module</span>
+          <span class="tool-badge badge-live">Live Demo</span>
+        </div>
+        <span class="tool-icon-lg">⚡</span>
+        <div class="tool-name">Token &amp; Finance Optimizer</div>
+        <div class="tool-tagline">Ætheris AWCMP · Context Engineering + Quantitative Finance</div>
+        <p class="tool-desc">The flagship AWCMP analytics module. Demonstrates how methodical context engineering — chunking strategy, retrieval controls, structured prompting — reduces operational AI costs by 40–65%, while a fully implemented quantitative finance engine shows how the same infrastructure becomes a monetizable service layer for financial institutions.</p>
+        <div class="expect-box">
+          <div class="expect-label">What you will find inside</div>
+          <ul class="expect-list">
+            <li>Interactive pipeline diagram with 6 clickable nodes — data intake through revenue outcomes</li>
+            <li>Token cost simulator: chunk size, overlap, Top-K, system/user prompt tokens, cache hit rate, calls/day sliders</li>
+            <li>Live computed metrics: tokens/request, daily cost, monthly savings vs. naive baseline, 12-month projection charts</li>
+            <li>Chunking playbook — Compliance, Balanced, and Aggressive presets with token budget breakdown diagrams</li>
+            <li>Black-Scholes engine — full d₁, d₂, Call price C, Put price P, plus all five Greeks (Δ, Γ, ν, Θ, ρ)</li>
+            <li>Position sizing panel — Volatility Targeting, Fractional Kelly criterion, Max Loss sizing with dollar outputs</li>
+            <li>Monetization calculator — service fee model, ROI curve, three product tiers with revenue projections</li>
+          </ul>
+        </div>
+        <div class="tool-footer">
+          <div class="tags">
+            <span class="tag">Black-Scholes</span><span class="tag">Token Opt.</span><span class="tag">Greeks</span><span class="tag">Kelly</span><span class="tag">RAG</span><span class="tag">FinOps</span>
+          </div>
+          <a href="token-finance-optimizer.html" class="tool-btn">Open Tool</a>
+        </div>
+      </div>
+
+      <!-- TOOL 2 -->
+      <div class="tool-card tc-green">
+        <div class="tool-card-meta">
+          <span class="tool-num">Tool 02 — Cost Governance</span>
+          <span class="tool-badge badge-live">Live Demo</span>
+        </div>
+        <span class="tool-icon-lg">📈</span>
+        <div class="tool-name">FinOps Cost Governance Dashboard</div>
+        <div class="tool-tagline">Real-Time AI Spend Attribution · Policy Gate Enforcement</div>
+        <p class="tool-desc">Operational cost visibility for AI workloads in financial services. Tracks every model invocation as an attributed financial transaction. Surfaces cost anomalies as governance signals, enforces per-agent spend authorities, and generates FinOps reports mapped to regulatory business units.</p>
+        <div class="expect-box">
+          <div class="expect-label">What you will find inside</div>
+          <ul class="expect-list">
+            <li>Live token spend dashboard — daily burn rate, session cost attribution, rolling 7-day averages</li>
+            <li>Cost anomaly detector — sessions exceeding 3× rolling average trigger ESCALATE/BLOCK visualization</li>
+            <li>Model efficiency comparison — cost-per-1K-output-tokens across providers</li>
+            <li>Spend authority enforcement — per-agent daily budget with threshold visualization</li>
+            <li>Task class analysis — cost attribution by type (analysis, generation, compliance)</li>
+            <li>Business unit FinOps report — AI expenditure mapped to regulatory cost centres</li>
+            <li>Full formula: DailyCost = (TotalTokens × calls × costPerM) / 1,000,000 with live inputs</li>
+          </ul>
+        </div>
+        <div class="tool-footer">
+          <div class="tags">
+            <span class="tag">FinOps</span><span class="tag">Cost Attribution</span><span class="tag">Anomaly</span><span class="tag">PostgreSQL</span>
+          </div>
+          <a href="finops-dashboard.html" class="tool-btn">Open Tool</a>
+        </div>
+      </div>
+
+      <!-- TOOL 3 -->
+      <div class="tool-card tc-red">
+        <div class="tool-card-meta">
+          <span class="tool-num">Tool 03 — Regulatory Analytics</span>
+          <span class="tool-badge badge-mod">Module</span>
+        </div>
+        <span class="tool-icon-lg">🛡</span>
+        <div class="tool-name">Regulatory Risk Compliance Analyzer</div>
+        <div class="tool-tagline">MiFID II · SOX · Basel III · DORA · FCA · EU AI Act</div>
+        <p class="tool-desc">A structured framework for assessing AI deployment risk across six primary financial regulatory regimes. Maps each agent workflow to applicable obligations, identifies governance gaps, and generates a compliance posture score. Designed as a pre-deployment checklist for financial institutions adopting agentic AI.</p>
+        <div class="expect-box">
+          <div class="expect-label">What you will find inside</div>
+          <ul class="expect-list">
+            <li>Regulatory matrix — SOX, Basel III, MiFID II, Dodd-Frank, DORA, FCA AI Rules, EU AI Act obligations</li>
+            <li>Compliance posture scorer — interactive checklist computing overall readiness score per framework</li>
+            <li>Risk heat map — agent capability vs. regulatory requirement coverage visual grid</li>
+            <li>Gap analysis — identifies absent governance controls and risk created by each gap</li>
+            <li>Audit trail requirements — retention periods, record types, disclosure obligations by framework</li>
+            <li>Policy gate specification — what must be enforced at the MCP layer per regulatory regime</li>
+          </ul>
+        </div>
+        <div class="tool-footer">
+          <div class="tags">
+            <span class="tag">MiFID II</span><span class="tag">SOX</span><span class="tag">EU AI Act</span><span class="tag">Audit Trail</span>
+          </div>
+          <a href="risk-compliance-analyzer.html" class="tool-btn">Open Tool</a>
+        </div>
+      </div>
+
+      <!-- TOOL 4 -->
+      <div class="tool-card tc-purple">
+        <div class="tool-card-meta">
+          <span class="tool-num">Tool 04 — Quant Reference</span>
+          <span class="tool-badge badge-mod">Reference</span>
+        </div>
+        <span class="tool-icon-lg">🔬</span>
+        <div class="tool-name">Quantitative Finance Formula Reference</div>
+        <div class="tool-tagline">Complete Mathematical Reference · All Formulas · Educational</div>
+        <p class="tool-desc">A comprehensive reference module covering every quantitative finance formula used in the Ætheris AWCMP financial analytics layer. All formulas rendered in readable HTML notation with worked examples, sensitivity tables, and the mathematical bridge connecting options theory to AI cost governance.</p>
+        <div class="expect-box">
+          <div class="expect-label">What you will find inside</div>
+          <ul class="expect-list">
+            <li>Complete Black-Scholes — d₁, d₂, Call price C, Put price P with step-by-step expansion</li>
+            <li>All five Greeks — Δ, Γ, ν, Θ, ρ with intuitive explanations and sensitivity analysis</li>
+            <li>Three sizing models — Fractional Kelly, Volatility Targeting, Max Loss Per Trade</li>
+            <li>Risk measures — VaR, Expected Shortfall, Sharpe Ratio, Sortino Ratio</li>
+            <li>Token economics bridge — how Black-Scholes concepts map to AI cost optimization</li>
+            <li>Normal CDF/PDF in JavaScript with accuracy notes and validation</li>
+          </ul>
+        </div>
+        <div class="tool-footer">
+          <div class="tags">
+            <span class="tag">Black-Scholes</span><span class="tag">Greeks</span><span class="tag">VaR</span><span class="tag">Kelly</span>
+          </div>
+          <a href="token-finance-optimizer.html#sec4" class="tool-btn">Open Reference</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CROSS-SECTOR -->
+    <div class="cross-sector">
+      <div class="cs-title">Cross-Sector Tool Relevance — These tools apply beyond Financial Services</div>
+      <div class="cs-grid">
+        <div class="cs-item"><div class="cs-sector">Healthcare Systems</div><div class="cs-rel">FinOps cost attribution maps to clinical programme budgeting. Token optimizer reduces per-patient encounter AI cost.</div></div>
+        <div class="cs-item"><div class="cs-sector">Legal &amp; Compliance</div><div class="cs-rel">Compliance Analyzer framework applies to SRA, ABA, and UPL risk. Chunking playbook optimizes document retrieval.</div></div>
+        <div class="cs-item"><div class="cs-sector">Government &amp; Public Sector</div><div class="cs-rel">FinOps public expenditure reporting. Risk analyzer maps to EU AI Act Annex III public sector high-risk classification.</div></div>
+        <div class="cs-item"><div class="cs-sector">Technology Platforms</div><div class="cs-rel">Token Optimizer directly applicable to code generation pipeline cost control and IP provenance tracking.</div></div>
+        <div class="cs-item"><div class="cs-sector">Business Operations</div><div class="cs-rel">ROI calculator and service fee model apply to procurement AI cost justification and SOX 302/404 disclosure.</div></div>
+        <div class="cs-item"><div class="cs-sector">All Sectors</div><div class="cs-rel">Chunking &amp; prompt formulation playbook is universal — applicable to any RAG-based agent pipeline regardless of sector.</div></div>
+      </div>
+    </div>
+
+    <div class="related-block">
+      <h3>Related Pages</h3>
+      <div class="related-links">
+        <a href="sector-applicability.html" class="related-link">All Sectors</a>
+        <a href="governance-model.html" class="related-link">Governance Model</a>
+        <a href="layer-control-plane.html" class="related-link">Control Plane</a>
+        <a href="layer-feedback.html" class="related-link">Feedback &amp; Telemetry</a>
+        <a href="build-status.html" class="related-link">Build Status</a>
+        <a href="token-finance-optimizer.html" class="related-link">Token &amp; Finance Optimizer</a>
+        <a href="finops-dashboard.html" class="related-link">FinOps Dashboard</a>
+        <a href="risk-compliance-analyzer.html" class="related-link">Risk Compliance Analyzer</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-brand" style="margin-bottom:0.75rem;"><span class="br" style="color:var(--accent);">[</span>BRAVO<span class="br" style="color:var(--accent);">]</span>&nbsp;Agentic Governance Architecture</a>
+        <p>A Team Bravo Initiative under Systems Thinking for AI. Architecture-first. Governance-native. Built for regulated environments.</p>
+      </div>
+      <div class="footer-col"><h4>Architecture</h4><ul><li><a href="project-reference.html">Project Reference</a></li><li><a href="governance-model.html">Governance Model</a></li><li><a href="layer-runtime.html">Runtime Layer</a></li><li><a href="layer-tools.html">Tool Layer</a></li></ul></div>
+      <div class="footer-col"><h4>Sectors</h4><ul><li><a href="sector-applicability.html">All Sectors</a></li><li><a href="sector-financial.html">Financial</a></li><li><a href="sector-healthcare.html">Healthcare</a></li><li><a href="sector-government.html">Government</a></li></ul></div>
+      <div class="footer-col"><h4>Tools</h4><ul><li><a href="token-finance-optimizer.html">Token Optimizer</a></li><li><a href="finops-dashboard.html">FinOps Dashboard</a></li><li><a href="risk-compliance-analyzer.html">Risk Analyzer</a></li><li><a href="build-status.html">Sprint Log</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>Bravo Agentic Governance Architecture · Team Bravo Initiative · divergence-MCP</p>
+      <p>BUILD v0.3.1 — PHASE 2 ACTIVE</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

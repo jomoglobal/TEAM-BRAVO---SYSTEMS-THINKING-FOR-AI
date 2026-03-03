@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Project Reference — divergence-MCP | Bravo Governance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a;--off-white:#f4f2ed;--mid:#5a5a5a;--light:#9a9a9a;
+    --accent:#c8402a;--accent-2:#2a5c8a;--accent-3:#3a6b4a;
+    --panel:#111111;--panel-border:#2a2a2a;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--serif:'IBM Plex Serif',serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black);color:var(--off-white);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden;}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15;letter-spacing:-0.02em;}
+  h2{font-family:var(--sans);font-weight:500;font-size:1.15rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--off-white);}
+  h3{font-family:var(--mono);font-weight:400;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);}
+  h4{font-family:var(--sans);font-weight:500;font-size:1rem;color:var(--off-white);}
+  p{font-family:var(--sans);font-weight:300;color:#c8c4bc;line-height:1.75;}
+  a{text-decoration:none;}
+  .container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+  section{border-top:1px solid var(--panel-border);padding:4rem 0;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,0.97);border-bottom:1px solid var(--panel-border);backdrop-filter:blur(8px);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 2rem;max-width:1200px;margin:0 auto;}
+  .nav-brand{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--off-white);text-decoration:none;display:flex;align-items:center;gap:0.5rem;}
+  .nav-brand .br{color:var(--accent);}
+  .nav-links{display:flex;gap:1.75rem;list-style:none;}
+  .nav-links a{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);text-decoration:none;transition:color 0.2s;padding-bottom:2px;border-bottom:1px solid transparent;}
+  .nav-links a:hover,.nav-links a.active{color:var(--off-white);border-bottom-color:var(--accent-2);}
+  .nav-tag{font-family:var(--mono);font-size:0.62rem;color:var(--accent);border:1px solid var(--accent);padding:0.2rem 0.6rem;letter-spacing:0.1em;white-space:nowrap;}
+  .page-header{padding:7rem 0 4rem;border-top:none;background:repeating-linear-gradient(0deg,transparent,transparent 59px,var(--panel-border) 59px,var(--panel-border) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,var(--panel-border) 59px,var(--panel-border) 60px),var(--black);}
+  .page-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+  .page-label::before{content:'';display:block;width:2.5rem;height:1px;background:var(--accent);}
+  .page-intro{font-size:1rem;color:#9a9690;max-width:640px;border-left:2px solid var(--accent-2);padding-left:1.25rem;font-weight:300;line-height:1.75;margin-top:1.25rem;}
+  .callout{background:#0f1518;border:1px solid #1e2e38;border-left:3px solid var(--accent-2);padding:1.5rem 2rem;margin:2rem 0;}
+  .callout p{font-family:var(--serif);font-style:italic;font-size:0.95rem;color:#9ab0bc;}
+  .related-block{background:var(--panel);border:1px solid var(--panel-border);padding:1.5rem 2rem;margin-top:3rem;}
+  .related-block h3{margin-bottom:1rem;}
+  .related-links{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .related-link{font-family:var(--mono);font-size:0.65rem;color:var(--accent-2);border:1px solid var(--panel-border);padding:0.3rem 0.75rem;text-decoration:none;transition:border-color 0.2s,color 0.2s;}
+  .related-link:hover{border-color:var(--accent-2);color:var(--off-white);}
+  .pill{font-family:var(--mono);font-size:0.6rem;padding:0.2rem 0.55rem;border:1px solid;display:inline-block;}
+  .pill-complete{color:#3a6b4a;border-color:#3a6b4a;}
+  .pill-active{color:#2a5c8a;border-color:#2a5c8a;}
+  .pill-planned{color:#5a5a5a;border-color:#2a2a2a;}
+  footer{background:#050505;border-top:1px solid var(--panel-border);padding:4rem 0 2rem;}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+  .footer-brand-text{font-size:0.82rem;color:var(--mid);margin-top:0.75rem;max-width:280px;}
+  .footer-col h4{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-bottom:1rem;}
+  .footer-col ul{list-style:none;}
+  .footer-col ul li{padding:0.3rem 0;}
+  .footer-col ul li a{font-family:var(--mono);font-size:0.7rem;color:#4a4a4a;text-decoration:none;transition:color 0.2s;}
+  .footer-col ul li a:hover{color:var(--light);}
+  .footer-bottom{border-top:1px solid #1a1a1a;padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;}
+  .footer-bottom p{font-family:var(--mono);font-size:0.65rem;color:#3a3a3a;}
+  @media(max-width:960px){.footer-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:640px){.footer-grid{grid-template-columns:1fr;}.nav-links{display:none;}}
+
+  .layer-stack{display:flex;flex-direction:column;gap:1px;}
+  .layer-block{background:var(--panel);border-left:3px solid transparent;display:grid;grid-template-columns:200px 1fr 200px;gap:2rem;padding:2rem;align-items:start;transition:background 0.2s;text-decoration:none;}
+  .layer-block:hover{background:#141414;}
+  .lb-runtime{border-color:#c8402a;}.lb-tool{border-color:#2a5c8a;}.lb-infra{border-color:#3a6b4a;}.lb-orch{border-color:#b8920a;}
+  .lb-id .ltag{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.5rem;border:1px solid;display:inline-block;margin-bottom:0.4rem;width:fit-content;}
+  .ltag-red{color:#c8402a;border-color:#c8402a;}.ltag-blue{color:#2a5c8a;border-color:#2a5c8a;}.ltag-green{color:#3a6b4a;border-color:#3a6b4a;}.ltag-yellow{color:#b8920a;border-color:#b8920a;}
+  .lb-id h4{font-size:0.92rem;color:var(--off-white);}
+  .lb-id .lb-num{font-family:var(--mono);font-size:0.62rem;color:var(--mid);}
+  .lb-body p{font-size:0.85rem;margin-bottom:0.6rem;}
+  .lb-meta{display:flex;flex-direction:column;gap:0.3rem;}
+  .meta-chip{font-family:var(--mono);font-size:0.65rem;background:#1a1a1a;border:1px solid var(--panel-border);padding:0.3rem 0.6rem;color:var(--light);}
+  .tool-table{width:100%;border-collapse:collapse;margin-top:1rem;}
+  .tool-table thead tr{border-bottom:1px solid var(--panel-border);}
+  .tool-table th{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);text-align:left;padding:0.6rem 1rem;}
+  .tool-table tbody tr{border-bottom:1px solid #181818;transition:background 0.15s;}
+  .tool-table tbody tr:hover{background:#111;}
+  .tool-table td{padding:0.9rem 1rem;font-size:0.82rem;color:#b0aaa0;vertical-align:top;}
+  .tool-table td:first-child{font-family:var(--mono);font-size:0.75rem;color:var(--accent-2);}
+  .td-title{color:var(--off-white);font-weight:500;margin-bottom:0.2rem;font-family:var(--sans);}
+  .roadmap-item{display:grid;grid-template-columns:130px 1fr;gap:2rem;padding:1.5rem 0;border-bottom:1px solid #1a1a1a;}
+  .rphase{font-family:var(--mono);font-size:0.65rem;color:var(--mid);}
+  .rphase strong{display:block;color:var(--off-white);font-size:0.78rem;margin-bottom:0.2rem;}
+  .tags{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.5rem;}
+  .tag{font-family:var(--mono);font-size:0.62rem;background:#1a1a1a;padding:0.2rem 0.5rem;color:var(--mid);}
+  /* SVG STACK DIAGRAM */
+  .stack-diagram{width:100%;height:320px;background:var(--panel);border:1px solid var(--panel-border);position:relative;overflow:hidden;}
+  .stack-diagram svg{width:100%;height:100%;}
+  @media(max-width:960px){.layer-block{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand"><span class="br">[</span>BRAVO<span class="br">]</span>&nbsp;&nbsp;Agentic Governance Architecture</a>
+    <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="project-reference.html" class="active">Stack</a></li><li><a href="governance-model.html">Governance</a></li><li><a href="sector-applicability.html">Sectors</a></li><li><a href="build-status.html">Build Log</a></li></ul>
+    <span class="nav-tag">v0.4.3 — ACTIVE BUILD</span>
+  </div>
+</nav>
+<section class="page-header" style="border-top:none;">
+  <div class="container">
+    <div class="page-label">Project Reference — divergence-MCP</div>
+    <h1>Stack Architecture &amp;<br>Implementation Reference</h1>
+    <p class="page-intro">divergence-MCP is an architecture-first build demonstrating governed AI infrastructure through deliberate, incremental construction. Each layer is added with explicit reasoning, audit intent, and documented governance rationale.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;">
+      <div>
+        <h3 style="margin-bottom:0.75rem;">Project Overview</h3>
+        <h2 style="margin-bottom:1.25rem;">divergence-MCP</h2>
+        <p style="margin-bottom:1rem;">divergence-MCP establishes the foundational runtime, tool, and infrastructure architecture for governed AI agent operations. It is not a demonstration environment — it is the production-intent scaffold from which sector-specific deployments are derived.</p>
+        <p>The project name reflects a deliberate divergence from unstructured AI deployment patterns toward a model where governance controls, cost instrumentation, and audit traceability are structural properties rather than applied overlays.</p>
+      </div>
+      <div>
+        <h3 style="margin-bottom:1rem;">Technical Specification</h3>
+        <div style="display:flex;flex-direction:column;gap:1px;background:var(--panel-border);">
+          <div style="background:var(--panel);display:grid;grid-template-columns:140px 1fr;padding:0.85rem 1rem;"><span style="font-family:var(--mono);font-size:0.65rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em;">Runtime</span><span style="font-family:var(--mono);font-size:0.72rem;color:var(--off-white);">Node.js (ESM)</span></div>
+          <div style="background:var(--panel);display:grid;grid-template-columns:140px 1fr;padding:0.85rem 1rem;"><span style="font-family:var(--mono);font-size:0.65rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em;">Protocol</span><span style="font-family:var(--mono);font-size:0.72rem;color:var(--off-white);">Model Context Protocol SDK</span></div>
+          <div style="background:var(--panel);display:grid;grid-template-columns:140px 1fr;padding:0.85rem 1rem;"><span style="font-family:var(--mono);font-size:0.65rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em;">Model Provider</span><span style="font-family:var(--mono);font-size:0.72rem;color:var(--off-white);">Anthropic Claude API</span></div>
+          <div style="background:var(--panel);display:grid;grid-template-columns:140px 1fr;padding:0.85rem 1rem;"><span style="font-family:var(--mono);font-size:0.65rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em;">Active Model</span><span style="font-family:var(--mono);font-size:0.72rem;color:var(--off-white);">claude-sonnet-4-20250514</span></div>
+          <div style="background:var(--panel);display:grid;grid-template-columns:140px 1fr;padding:0.85rem 1rem;"><span style="font-family:var(--mono);font-size:0.65rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em;">Persistence</span><span style="font-family:var(--mono);font-size:0.72rem;color:var(--accent-2);">PostgreSQL (Phase 2)</span></div>
+          <div style="background:var(--panel);display:grid;grid-template-columns:140px 1fr;padding:0.85rem 1rem;"><span style="font-family:var(--mono);font-size:0.65rem;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em;">Orchestration</span><span style="font-family:var(--mono);font-size:0.72rem;color:var(--mid);">n8n HTTP/SSE (Phase 4)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#0d0d0d;">
+  <div class="container">
+    <div style="margin-bottom:2rem;">
+      <h3 style="margin-bottom:0.75rem;">Stack Interaction Diagram</h3>
+      <h2>Visual Layer Map</h2>
+    </div>
+    <div class="stack-diagram" id="stackDiagram">
+      <svg id="stackSvg"></svg>
+    </div>
+    <div style="margin-top:0.75rem;font-family:var(--mono);font-size:0.65rem;color:var(--mid);">Hover a layer to highlight connections. Click to navigate to the layer detail page.</div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div style="margin-bottom:2rem;"><h3 style="margin-bottom:0.75rem;">Architecture Layers</h3><h2>Four-Layer Stack Reference</h2></div>
+    <div class="callout"><p>"The distinction between experimental AI and governed AI is not the sophistication of the model — it is the presence of structural controls around model execution. divergence-MCP builds those controls from the ground up."</p></div>
+    <div class="layer-stack" style="margin-top:2rem;">
+      <a href="layer-runtime.html" class="layer-block lb-runtime">
+        <div class="lb-id"><span class="ltag ltag-red">Runtime</span><h4>Execution Environment</h4><span class="lb-num">Layer 01</span></div>
+        <div class="lb-body"><p>Node.js ESM provides the runtime contract. ESM boundaries enforce clean module isolation, preventing implicit state leakage between agent sessions. Model versioning is explicit — no aliases permitted.</p><p>API key management via environment variables validated. No credentials embedded in agent logic.</p></div>
+        <div class="lb-meta"><div class="meta-chip">Node.js ESM</div><div class="meta-chip">@anthropic-ai/sdk</div><div class="meta-chip">claude-sonnet-4-20250514</div><div class="meta-chip">Session isolation</div></div>
+      </a>
+      <a href="layer-tools.html" class="layer-block lb-tool">
+        <div class="lb-id"><span class="ltag ltag-blue">Tool Layer</span><h4>MCP Tool Definitions</h4><span class="lb-num">Layer 02</span></div>
+        <div class="lb-body"><p>Three core tools deployed via MCP SDK. Each tool is defined with explicit JSON Schema, enabling validation before execution. Schema validation at the protocol layer prevents malformed calls reaching infrastructure.</p><p>Tools are versioned independently of agent logic, enabling governance updates without workflow redeployment.</p></div>
+        <div class="lb-meta"><div class="meta-chip">@modelcontextprotocol/sdk</div><div class="meta-chip">track_ai_cost</div><div class="meta-chip">model_system</div><div class="meta-chip">analyze_finops</div></div>
+      </a>
+      <a href="layer-infrastructure.html" class="layer-block lb-infra">
+        <div class="lb-id"><span class="ltag ltag-green">Infrastructure</span><h4>Persistence &amp; Integration</h4><span class="lb-num">Layer 03</span></div>
+        <div class="lb-body"><p>PostgreSQL serves as the primary audit and cost logging backend. Schema is append-only — records are never updated, only appended. This tamper-evident design is a regulatory requirement in most target sectors.</p><p>AWS Cost Explorer API integration extends visibility to include underlying infrastructure costs attributable to AI workloads.</p></div>
+        <div class="lb-meta"><div class="meta-chip">PostgreSQL (Phase 2)</div><div class="meta-chip">Append-only schema</div><div class="meta-chip">AWS Cost Explorer</div><div class="meta-chip">n8n HTTP/SSE</div></div>
+      </a>
+      <a href="layer-orchestration.html" class="layer-block lb-orch">
+        <div class="lb-id"><span class="ltag ltag-yellow">Orchestration</span><h4>Workflow &amp; Composition</h4><span class="lb-num">Layer 04</span></div>
+        <div class="lb-body"><p>n8n provides HTTP and SSE transport for agent orchestration. Governance logic — escalation paths, approval gates — can be updated independently of model logic. This separation is architecturally critical.</p><p>Cross-server MCP composition enables specialised servers to compose into single workflows with each server maintaining its own tool namespace.</p></div>
+        <div class="lb-meta"><div class="meta-chip">n8n workflow engine</div><div class="meta-chip">SSE streaming</div><div class="meta-chip">Approval gates</div><div class="meta-chip">Cross-server MCP</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section style="background:#0d0d0d;">
+  <div class="container">
+    <div style="margin-bottom:2rem;"><h3 style="margin-bottom:0.75rem;">Tool Layer Detail</h3><h2>Core MCP Tools — Specification</h2></div>
+    <table class="tool-table">
+      <thead><tr><th>Tool Name</th><th>Classification</th><th>Purpose</th><th>Governance Role</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>track_ai_cost</td>
+          <td><div class="td-title">Cost Instrumentation</div>FinOps / Audit</td>
+          <td>Captures per-invocation cost data: model ID, token counts, cost_usd, session ID, timestamp, and task classification. Writes to PostgreSQL audit table.</td>
+          <td>Primary cost governance signal. Enables spend threshold enforcement and business unit attribution.</td>
+          <td><span class="pill pill-complete">DEPLOYED</span></td>
+        </tr>
+        <tr>
+          <td>model_system</td>
+          <td><div class="td-title">Model Management</div>Configuration / Control</td>
+          <td>Manages model selection, parameter governance, and configuration enforcement. Prevents selection of models outside approved configurations.</td>
+          <td>Ensures model version stability across compliance cycles. Enforces cost-class routing — directing low-complexity tasks to lower-cost models.</td>
+          <td><span class="pill pill-complete">DEPLOYED</span></td>
+        </tr>
+        <tr>
+          <td>analyze_finops</td>
+          <td><div class="td-title">Financial Operations</div>Analytics / Reporting</td>
+          <td>Performs financial operations analysis on accumulated cost data. Generates spend trend reports, model cost comparisons, and budget utilisation summaries.</td>
+          <td>Surfaces cost governance insights for review cycles. Identifies model efficiency regressions. Supports FinOps reporting requirements.</td>
+          <td><span class="pill pill-complete">DEPLOYED</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div style="margin-bottom:2rem;"><h3 style="margin-bottom:0.75rem;">Integration Roadmap</h3><h2>Build Sequence Reference</h2></div>
+    <div>
+      <div class="roadmap-item"><div class="rphase"><strong>Phase 1</strong><span class="pill pill-complete">COMPLETE</span></div><div><h4 style="font-size:0.92rem;margin-bottom:0.35rem;">Core Stack Establishment</h4><p style="font-size:0.82rem;">Runtime layer, MCP tool definitions, Claude API integration, and ESM module architecture established. All three core tools operational with JSON Schema validation.</p><div class="tags"><span class="tag">Node.js ESM</span><span class="tag">MCP SDK</span><span class="tag">Claude API</span><span class="tag">3 Core Tools</span></div></div></div>
+      <div class="roadmap-item"><div class="rphase"><strong>Phase 2</strong><span class="pill pill-active">ACTIVE</span></div><div><h4 style="font-size:0.92rem;margin-bottom:0.35rem;">PostgreSQL Persistence &amp; Cost Logging</h4><p style="font-size:0.82rem;">Immutable audit schema design and implementation. Cost records written per invocation with full metadata. GDPR retention compliance review in progress.</p><div class="tags"><span class="tag">PostgreSQL</span><span class="tag">Audit log writer</span><span class="tag">Cost aggregation</span></div></div></div>
+      <div class="roadmap-item"><div class="rphase"><strong>Phase 3</strong><span class="pill pill-planned">PLANNED</span></div><div><h4 style="font-size:0.92rem;margin-bottom:0.35rem;">AWS FinOps &amp; Model Comparison</h4><p style="font-size:0.82rem;">AWS Cost Explorer API integration. OpenAI model comparison tooling for cost and performance benchmarking across providers.</p><div class="tags"><span class="tag">AWS Cost Explorer</span><span class="tag">IAM scoping</span><span class="tag">Model benchmarks</span></div></div></div>
+      <div class="roadmap-item" style="border-bottom:none;"><div class="rphase"><strong>Phase 4</strong><span class="pill pill-planned">PLANNED</span></div><div><h4 style="font-size:0.92rem;margin-bottom:0.35rem;">Cross-Server Composition &amp; n8n Orchestration</h4><p style="font-size:0.82rem;">Multi-server MCP composition with permission namespace isolation. n8n HTTP/SSE transport. Human-in-the-loop approval node integration.</p><div class="tags"><span class="tag">Cross-server MCP</span><span class="tag">n8n</span><span class="tag">Approval nodes</span><span class="tag">Policy gates</span></div></div></div>
+    </div>
+    <div class="related-block">
+      <h3>Related Pages</h3>
+      <div class="related-links">
+        <a href="layer-runtime.html" class="related-link">Runtime Layer</a>
+        <a href="layer-tools.html" class="related-link">Tool Layer</a>
+        <a href="layer-infrastructure.html" class="related-link">Infrastructure Layer</a>
+        <a href="layer-orchestration.html" class="related-link">Orchestration Layer</a>
+        <a href="governance-model.html" class="related-link">Governance Model</a>
+        <a href="build-status.html" class="related-link">Build Status</a>
+        <a href="sector-applicability.html" class="related-link">Sector Applications</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Stack SVG diagram
+const stackSvg = document.getElementById('stackSvg');
+const stackDiagram = document.getElementById('stackDiagram');
+const stackLayers = [
+  {id:'orch',label:'Orchestration Layer',sub:'n8n · Task routing · Approvals',color:'#b8920a',y:0.08,link:'layer-orchestration.html'},
+  {id:'ctrl',label:'Control Plane',sub:'Policy gates · Spend monitor · Escalation',color:'#7a5cb8',y:0.27,link:'layer-control-plane.html'},
+  {id:'runtime',label:'Runtime Layer',sub:'Node.js ESM · Claude API · Model versioning',color:'#c8402a',y:0.46,link:'layer-runtime.html'},
+  {id:'tools',label:'Tool Layer (MCP)',sub:'track_ai_cost · model_system · analyze_finops',color:'#2a5c8a',y:0.65,link:'layer-tools.html'},
+  {id:'infra',label:'Infrastructure Layer',sub:'PostgreSQL · AWS Cost Explorer · n8n transport',color:'#3a6b4a',y:0.83,link:'layer-infrastructure.html'},
+];
+function buildStack(){
+  stackSvg.innerHTML='';
+  const W=stackDiagram.clientWidth,H=stackDiagram.clientHeight;
+  const barH=H*0.14, barW=W*0.7, lx=(W-barW)/2;
+  stackLayers.forEach(l=>{
+    const cy=H*l.y+barH/2;
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',lx);rect.setAttribute('y',H*l.y);
+    rect.setAttribute('width',barW);rect.setAttribute('height',barH-2);
+    rect.setAttribute('fill',l.color+'18');rect.setAttribute('stroke',l.color);
+    rect.setAttribute('stroke-width','1');rect.setAttribute('rx','2');
+    rect.style.cursor='pointer';rect.style.transition='fill 0.2s';
+    const t1=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t1.setAttribute('x',lx+16);t1.setAttribute('y',H*l.y+barH*0.42);
+    t1.setAttribute('fill',l.color);t1.setAttribute('font-size','11');
+    t1.setAttribute('font-family','IBM Plex Mono,monospace');t1.setAttribute('font-weight','500');
+    t1.textContent=l.label;
+    const t2=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t2.setAttribute('x',lx+16);t2.setAttribute('y',H*l.y+barH*0.72);
+    t2.setAttribute('fill','#5a5a5a');t2.setAttribute('font-size','9.5');
+    t2.setAttribute('font-family','IBM Plex Mono,monospace');
+    t2.textContent=l.sub;
+    // arrow connector
+    if(stackLayers.indexOf(l)<stackLayers.length-1){
+      const ar=document.createElementNS('http://www.w3.org/2000/svg','text');
+      ar.setAttribute('x',W/2-6);ar.setAttribute('y',H*l.y+barH+1);
+      ar.setAttribute('fill','#2a2a2a');ar.setAttribute('font-size','12');
+      ar.setAttribute('text-anchor','middle');ar.setAttribute('font-family','monospace');
+      ar.textContent='↓';stackSvg.appendChild(ar);
+    }
+    [rect,t1,t2].forEach(el=>{
+      el.style.cursor='pointer';
+      el.addEventListener('mouseenter',()=>rect.setAttribute('fill',l.color+'30'));
+      el.addEventListener('mouseleave',()=>rect.setAttribute('fill',l.color+'18'));
+      el.addEventListener('click',()=>window.location.href=l.link);
+    });
+    stackSvg.appendChild(rect);stackSvg.appendChild(t1);stackSvg.appendChild(t2);
+  });
+}
+buildStack();
+window.addEventListener('resize',buildStack);
+</script>
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="nav-brand" style="margin-bottom:0.75rem;"><span class="br" style="color:var(--accent);">[</span>BRAVO<span class="br" style="color:var(--accent);">]</span>&nbsp;Agentic Governance Architecture</a>
+        <p class="footer-brand-text">A Team Bravo Initiative under Systems Thinking for AI. Architecture-first. Governance-native. Built for regulated environments.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Architecture</h4>
+        <ul>
+          <li><a href="project-reference.html">Project Reference</a></li>
+          <li><a href="governance-model.html">Governance Model</a></li>
+          <li><a href="layer-runtime.html">Runtime Layer</a></li>
+          <li><a href="layer-tools.html">Tool Layer</a></li>
+          <li><a href="layer-infrastructure.html">Infrastructure</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Sectors</h4>
+        <ul>
+          <li><a href="sector-applicability.html">All Sectors</a></li>
+          <li><a href="sector-financial.html">Financial</a></li>
+          <li><a href="sector-legal.html">Legal</a></li>
+          <li><a href="sector-healthcare.html">Healthcare</a></li>
+          <li><a href="sector-government.html">Government</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Build</h4>
+        <ul>
+          <li><a href="build-status.html">Sprint Log</a></li>
+          <li><a href="build-status.html#roadmap">Roadmap</a></li>
+          <li><a href="layer-control-plane.html">Control Plane</a></li>
+          <li><a href="layer-feedback.html">Feedback &amp; Telemetry</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Bravo Agentic Governance Architecture &middot; Team Bravo Initiative &middot; divergence-MCP</p>
+      <p>BUILD v0.4.3 &mdash; PHASE 2 ACTIVE</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
