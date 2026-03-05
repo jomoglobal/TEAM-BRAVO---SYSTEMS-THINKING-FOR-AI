@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TEAM BRAVO | Deployment</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .btn-page-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url('assets/bravo_bg_logo.png');
+      background-size: cover; background-position: center;
+      opacity: 0.06; pointer-events: none;
+    }
+    body.bg-button .wrap { position: relative; z-index: 1; }
+
+    .deploy-center {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 24px 0 16px;
+      gap: 12px;
+    }
+    .big-emblem {
+      width: 200px; height: 200px; border-radius: 999px;
+      border: 2px solid rgba(255,45,45,.40);
+      background: radial-gradient(circle at 30% 30%, rgba(255,45,45,.25), rgba(0,0,0,.60));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 1px rgba(255,45,45,.14), 0 0 60px rgba(255,45,45,.15), 0 40px 90px rgba(0,0,0,.70);
+      cursor: pointer; user-select: none; overflow: hidden; padding: 20px;
+      transition: box-shadow .2s, transform .1s;
+    }
+    .big-emblem:hover { box-shadow: 0 0 0 2px rgba(255,45,45,.40), 0 0 80px rgba(255,45,45,.25); }
+    .big-emblem:active { transform: scale(.97); }
+    .big-emblem img { width: 100%; height: 100%; object-fit: contain;
+                      filter: drop-shadow(0 0 20px rgba(255,45,45,.5)); }
+    .big-emblem.running { animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 2px rgba(255,45,45,.40), 0 0 60px rgba(255,45,45,.20); }
+      50%      { box-shadow: 0 0 0 4px rgba(255,45,45,.60), 0 0 100px rgba(255,45,45,.40); }
+    }
+    .phase-label {
+      font-family: var(--mono); font-size: 13px; color: var(--red);
+      letter-spacing: 1px; text-align: center; min-height: 20px;
+    }
+
+    .step-list { list-style: none; padding: 0; margin: 0; }
+    .step-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 7px 0; border-bottom: 1px solid rgba(255,45,45,.07);
+      font-size: 12px; font-family: var(--mono); color: var(--muted);
+    }
+    .step-list li.done { color: var(--text); }
+    .step-list li.active { color: var(--red); }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%;
+                background: rgba(255,45,45,.20); flex-shrink: 0; margin-top: 3px; }
+    .step-list li.done .step-dot { background: #00dc64; }
+    .step-list li.active .step-dot { background: var(--red); box-shadow: 0 0 8px var(--glow); }
+
+    .output-section { margin-top: 10px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 10px; }
+    .stat-box { border: 1px solid rgba(255,45,45,.16); border-radius: 12px;
+                padding: 10px; background: rgba(5,6,8,.45); text-align: center; }
+    .stat-box .val { font-family: var(--mono); font-size: 18px; color: var(--red); }
+    .stat-box .lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    .pdf-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 12px; border-radius: 14px;
+      border: 1px solid rgba(255,45,45,.35);
+      background: linear-gradient(135deg, rgba(255,45,45,.18), rgba(193,15,26,.12));
+      color: #fff; font-family: var(--mono); font-size: 13px; letter-spacing: .6px;
+      cursor: pointer; margin-top: 10px; transition: box-shadow .2s;
+    }
+    .pdf-btn:hover { box-shadow: 0 0 0 1px rgba(255,45,45,.40), 0 0 30px var(--glow); }
+    .pdf-btn:disabled { opacity: .4; cursor: not-allowed; }
+  </style>
+</head>
+<body class="bg-button">
+  <div class="btn-page-bg"></div>
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="brand">
+        <img src="assets/topbar_logo.png" alt="TEAM BRAVO logo" />
+        <div class="title">
+          <b>TEAM BRAVO</b>
+          <span>AIP201 — One-Button Deployment</span>
+        </div>
+      </div>
+      <div class="nav">
+        <a href="index.html">HOME</a>
+        <a href="inputs.html">INPUTS</a>
+        <a href="button.html" class="active">BUTTON</a>
+      </div>
+    </div>
+
+    <!-- 3-column layout -->
+    <div style="margin-top:22px; display:grid; grid-template-columns:1fr 1.1fr 1fr; gap:14px; align-items:start;">
+
+      <!-- LEFT: Emblem + steps -->
+      <div class="card">
+        <p class="section-title">Deployment console</p>
+        <p class="sub" style="font-size:12px;">Press the emblem to run all 8 session setup steps end-to-end.</p>
+
+        <div class="deploy-center">
+          <div class="big-emblem" id="deployBtn" title="Execute deployment">
+            <img src="assets/hero_emblem.png" alt="TEAM BRAVO" />
+          </div>
+          <div class="phase-label" id="phaseLabel">READY</div>
+        </div>
+
+        <div class="btnrow" style="justify-content:center; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="runBtn">▶ Run deployment</button>
+          <button class="btn" id="resetBtn" style="border-color:rgba(255,255,255,.12);">↺ Reset</button>
+        </div>
+
+        <div class="small" style="text-align:center; margin-top:8px;">
+          Simulated deployment — no real infrastructure created.
+        </div>
+
+        <hr class="sep"/>
+        <p class="section-title">Session steps</p>
+        <ul class="step-list" id="stepList"></ul>
+      </div>
+
+      <!-- CENTER: Spec + stats -->
+      <div style="display:flex; flex-direction:column; gap:14px;">
+
+        <div class="card">
+          <p class="section-title">Spec readiness</p>
+          <div class="stat-grid" id="statGrid">
+            <div class="stat-box"><div class="val" id="statSessions">—</div><div class="lbl">Current session</div></div>
+            <div class="stat-box"><div class="val" id="statNodes">—</div><div class="lbl">Node types</div></div>
+            <div class="stat-box"><div class="val" id="statRels">—</div><div class="lbl">Rel types</div></div>
+          </div>
+          <div class="stat-grid" style="margin-top:8px;">
+            <div class="stat-box"><div class="val" id="statMode">—</div><div class="lbl">Retrieval mode</div></div>
+            <div class="stat-box"><div class="val" id="statLLM">—</div><div class="lbl">LLM</div></div>
+            <div class="stat-box"><div class="val" id="statEnv">—</div><div class="lbl">Environment</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="section-title">Execution log</p>
+          <div class="console" id="log" style="height:260px;"></div>
+        </div>
+
+        <!-- PDF download -->
+        <div class="card output-section">
+          <p class="section-title">Outputs</p>
+          <p class="sub" style="font-size:12px;">Download your professional deployment report and spec after running.</p>
+          <button class="pdf-btn" id="pdfBtn" disabled onclick="generatePDF()">
+            📄 Download AIP201 Deployment Report (PDF)
+          </button>
+          <button class="pdf-btn" id="jsonBtn" disabled onclick="downloadJSON()" style="margin-top:6px; background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.16);">
+            { } Download Spec JSON
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Spec snapshot -->
+      <div class="card">
+        <p class="section-title">Spec snapshot</p>
+        <div class="console" id="specSnap" style="height:480px;"></div>
+        <hr class="sep"/>
+        <p class="section-title" style="margin-top:0;">MCP config</p>
+        <div class="console" id="mcpConfig" style="height:160px;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    const log = document.getElementById('log');
+    const specSnap = document.getElementById('specSnap');
+    const mcpConfig = document.getElementById('mcpConfig');
+    const stepListEl = document.getElementById('stepList');
+    const phaseLabel = document.getElementById('phaseLabel');
+    const deployBtn = document.getElementById('deployBtn');
+    const runBtn = document.getElementById('runBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const pdfBtn = document.getElementById('pdfBtn');
+    const jsonBtn = document.getElementById('jsonBtn');
+
+    let deploymentLog = [];
+    let currentSpec = {};
+
+    const STEPS = [
+      { session: 1, label: 'Graph thinking & schema design validation' },
+      { session: 2, label: 'Neo4j AuraDB connection & Cypher index creation' },
+      { session: 3, label: 'LLM Graph Builder extraction pipeline setup' },
+      { session: 4, label: 'n8n document-to-graph pipeline configuration' },
+      { session: 5, label: 'Hybrid retrieval (vector + graph) workflow build' },
+      { session: 6, label: 'Claude MCP server configuration & registration' },
+      { session: 7, label: 'Production hardening: error handling & timeouts' },
+      { session: 8, label: 'Capstone readiness check & output generation' },
+    ];
+
+    function buildStepList() {
+      stepListEl.innerHTML = STEPS.map((s, i) =>
+        `<li id="step-${i}"><span class="step-dot"></span>S${s.session}: ${s.label}</li>`
+      ).join('');
+    }
+
+    function line(msg, type='info') {
+      const t = new Date().toLocaleTimeString();
+      const prefix = type === 'ok' ? '✓' : type === 'warn' ? '⚠' : type === 'head' ? '▶' : '·';
+      const entry = `[${t}] ${prefix} ${msg}`;
+      log.textContent += entry + '\n';
+      log.scrollTop = log.scrollHeight;
+      deploymentLog.push(entry);
+    }
+
+    function loadSpec() {
+      currentSpec = BravoSpec.getSpec();
+      specSnap.textContent = JSON.stringify(currentSpec, null, 2);
+
+      // MCP config snippet
+      const uri = currentSpec.neo4j?.uri || 'neo4j+s://xxxxx.databases.neo4j.io';
+      const user = currentSpec.neo4j?.user || 'neo4j';
+      const readOnly = currentSpec.neo4j?.readOnly || 'true';
+      mcpConfig.textContent = JSON.stringify({
+        mcpServers: {
+          neo4j: {
+            command: 'npx',
+            args: ['-y', '@neo4j/mcp-neo4j'],
+            env: {
+              NEO4J_URI: uri,
+              NEO4J_USER: user,
+              NEO4J_PASSWORD: '<from-spec>',
+              NEO4J_READ_ONLY: readOnly
+            }
+          }
+        }
+      }, null, 2);
+
+      // Stats
+      document.getElementById('statSessions').textContent = currentSpec.governance?.currentSession || '—';
+      document.getElementById('statNodes').textContent = (currentSpec.schema?.nodeLabels?.length || 0);
+      document.getElementById('statRels').textContent = (currentSpec.schema?.relationshipTypes?.length || 0);
+      document.getElementById('statMode').textContent = currentSpec.ai?.retrievalMode || '—';
+      document.getElementById('statLLM').textContent = currentSpec.ai?.llmProvider || '—';
+      document.getElementById('statEnv').textContent = currentSpec.environment?.name || '—';
+    }
+
+    function setStepState(idx, state) {
+      const li = document.getElementById('step-' + idx);
+      if (!li) return;
+      li.className = state;
+      const dot = li.querySelector('.step-dot');
+      if (state === 'done') dot.style.background = '#00dc64';
+      else if (state === 'active') dot.style.background = 'var(--red)';
+      else dot.style.background = '';
+    }
+
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function run() {
+      log.textContent = '';
+      deploymentLog = [];
+      pdfBtn.disabled = true;
+      jsonBtn.disabled = true;
+      deployBtn.classList.add('running');
+      runBtn.disabled = true;
+
+      const spec = currentSpec;
+      const name = spec.identity?.workspaceName || 'TEAM BRAVO';
+      const owner = spec.identity?.ownerName || 'Unknown';
+      const domain = spec.schema?.domainName || 'Unknown domain';
+
+      line(`Initializing AIP201 deployment for ${name}`, 'head');
+      line(`Owner: ${owner} | Cohort: ${spec.identity?.cohortId || 'N/A'}`);
+      line(`Domain: ${domain} | Environment: ${spec.environment?.name || 'dev'}`);
+      await delay(600);
+
+      for (let i = 0; i < STEPS.length; i++) {
+        const s = STEPS[i];
+        setStepState(i, 'active');
+        phaseLabel.textContent = `SESSION ${s.session}`;
+        line(``, 'head');
+        line(`SESSION ${s.session} — ${s.label}`, 'head');
+        await delay(300);
+
+        if (s.session === 1) {
+          const nodes = spec.schema?.nodeLabels || [];
+          const rels = spec.schema?.relationshipTypes || [];
+          line(`Schema domain: ${domain}`);
+          line(`Node labels defined: ${nodes.length > 0 ? nodes.join(', ') : 'none — go to Inputs > Schema'}`);
+          line(`Relationship types: ${rels.length > 0 ? rels.join(', ') : 'none — go to Inputs > Schema'}`);
+          line(`Sample query: ${spec.schema?.sampleQuery || 'not set'}`, nodes.length >= 3 ? 'ok' : 'warn');
+        } else if (s.session === 2) {
+          const uri = spec.neo4j?.uri;
+          line(`Neo4j URI: ${uri || 'NOT SET — go to Inputs > Neo4j'}`, uri ? 'ok' : 'warn');
+          line(`AuraDB tier: ${spec.neo4j?.tier || 'free'}`);
+          line(`Version: ${spec.neo4j?.version || '5.x'} — vector index supported: ${(spec.neo4j?.version || '5.x').startsWith('5') ? 'YES' : 'CHECK'}`);
+          const idxProps = spec.schema?.indexProps;
+          if (idxProps) {
+            idxProps.split(',').forEach(p => {
+              line(`CREATE INDEX: ${p.trim().replace('.', '_').toLowerCase()}_idx`, 'ok');
+            });
+          } else {
+            line('No custom indexes defined — add in Inputs > Schema', 'warn');
+          }
+          line(`MCP read-only: ${spec.neo4j?.readOnly || 'true'}`, 'ok');
+        } else if (s.session === 3) {
+          const gbUrl = spec.neo4j?.graphBuilderUrl || 'https://llm-graph-builder.neo4jlabs.com/';
+          line(`LLM Graph Builder URL: ${gbUrl}`, 'ok');
+          line(`Extraction mode: Schema-guided (preferred for precision)`);
+          line(`Chunk strategy: ${spec.n8n?.chunkStrategy || 'graph (500–1000 tokens)'}`);
+          line(`Entity resolution: merge duplicates after extraction`, 'ok');
+        } else if (s.session === 4) {
+          const n8nUrl = spec.n8n?.url;
+          line(`n8n instance: ${n8nUrl || 'NOT SET — go to Inputs > n8n'}`, n8nUrl ? 'ok' : 'warn');
+          line(`Webhook path: ${spec.n8n?.webhookPath || '/hybrid-query'}`);
+          line(`Chunk overlap: ${spec.n8n?.chunkOverlap || '50'} tokens`);
+          line(`Git provider: ${spec.n8n?.gitProvider || 'github'} | Repo: ${spec.n8n?.repoName || 'not set'}`);
+          line(`Document-to-graph pipeline: configured`, 'ok');
+        } else if (s.session === 5) {
+          const mode = spec.ai?.retrievalMode || 'hybrid';
+          line(`Retrieval mode: ${mode.toUpperCase()}`);
+          line(`Pinecone index: ${spec.pinecone?.indexName || 'not set'}`, spec.pinecone?.indexName ? 'ok' : 'warn');
+          line(`Embedding model: ${spec.ai?.embedModel || 'text-embedding-ada-002'}`);
+          line(`Top-K: ${spec.pinecone?.topK || '5'}`);
+          line(`Hybrid workflow: vector path + graph path → result fusion`, 'ok');
+        } else if (s.session === 6) {
+          const mcp = spec.ai?.mcpType || 'neo4j';
+          line(`MCP server: ${mcp}`);
+          line(`Claude model: ${spec.ai?.model || 'claude-sonnet-4-20250514'}`);
+          line(`Claude timeout: ${spec.ai?.claudeTimeout || '30'}s`);
+          line(`Cypher retries: ${spec.ai?.cypherRetries || '2'}`);
+          line(`MCP config written — see Spec Snapshot panel`, 'ok');
+        } else if (s.session === 7) {
+          const fbN = spec.governance?.fallbackNeo4j || 'vector_only';
+          const fbP = spec.governance?.fallbackPinecone || 'graph_only';
+          line(`Neo4j fallback: ${fbN}`);
+          line(`Pinecone fallback: ${fbP}`);
+          line(`Timeouts — Neo4j: ${spec.governance?.timeouts?.neo4j || '10'}s | Pinecone: ${spec.governance?.timeouts?.pinecone || '5'}s`);
+          line(`Governance mode: ${spec.governance?.mode || 'baseline'}`);
+          line(`Monthly budget: $${spec.governance?.monthlyBudget || 'not set'}`);
+          line(`Alert email: ${spec.governance?.alertEmail || 'not set'}`);
+          line(`Error handling hardened`, 'ok');
+        } else if (s.session === 8) {
+          const status = spec.governance?.capstoneStatus || 'not_started';
+          line(`Capstone domain: ${domain}`);
+          line(`Capstone status: ${status.replace('_',' ').toUpperCase()}`);
+          line(`Node types ready: ${(spec.schema?.nodeLabels?.length || 0) >= 5 ? 'YES ✓' : 'NEEDS MORE (aim for 5–8)'}`);
+          line(`Relationship types ready: ${(spec.schema?.relationshipTypes?.length || 0) >= 6 ? 'YES ✓' : 'NEEDS MORE (aim for 6+)'}`);
+          line(`PDF report generation: ready`, 'ok');
+          line(`All 8 sessions configured — deployment complete`, 'ok');
+        }
+        await delay(700);
+        setStepState(i, 'done');
+        await delay(200);
+      }
+
+      phaseLabel.textContent = 'COMPLETE';
+      deployBtn.classList.remove('running');
+      runBtn.disabled = false;
+      line('', 'ok');
+      line('━━━ DEPLOYMENT COMPLETE ━━━', 'ok');
+      line('Download your PDF report below.', 'ok');
+      pdfBtn.disabled = false;
+      jsonBtn.disabled = false;
+    }
+
+    // ── PDF Generation ──
+    function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+      const spec = currentSpec;
+      const W = 215.9, M = 18;
+      let y = 0;
+
+      const RED = [220, 38, 38];
+      const DARK = [8, 10, 18];
+      const PANEL = [18, 22, 35];
+      const TEXT = [240, 242, 255];
+      const MUTED = [130, 140, 170];
+      const LINE = [35, 40, 58];
+
+      function newPage() {
+        doc.addPage();
+        y = 0;
+        // Dark background
+        doc.setFillColor(...DARK);
+        doc.rect(0, 0, W, 279.4, 'F');
+        // Red top stripe
+        doc.setFillColor(...RED);
+        doc.rect(0, 0, W, 1.5, 'F');
+        y = 12;
+      }
+
+      function section(title) {
+        if (y > 240) newPage();
+        y += 4;
+        doc.setFillColor(...PANEL);
+        doc.roundedRect(M, y, W - M*2, 7, 1, 1, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(...RED);
+        doc.text(title.toUpperCase(), M + 3, y + 4.8);
+        y += 11;
+      }
+
+      function row(label, value, indent=0) {
+        if (y > 265) newPage();
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...MUTED);
+        doc.text(label, M + indent, y);
+        doc.setTextColor(...TEXT);
+        const val = String(value || '—');
+        doc.text(val, M + 58 + indent, y, { maxWidth: W - M - 58 - indent - 4 });
+        y += 6;
+      }
+
+      function hr() {
+        if (y > 265) newPage();
+        doc.setDrawColor(...LINE);
+        doc.line(M, y, W - M, y);
+        y += 4;
+      }
+
+      // ── Cover page ──
+      doc.setFillColor(...DARK);
+      doc.rect(0, 0, W, 279.4, 'F');
+      doc.setFillColor(...RED);
+      doc.rect(0, 0, W, 2, 'F');
+      doc.rect(0, 277.4, W, 2, 'F');
+
+      // Big title area
+      doc.setFillColor(...PANEL);
+      doc.roundedRect(M, 55, W - M*2, 80, 4, 4, 'F');
+      doc.setDrawColor(...RED);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(M, 55, W - M*2, 80, 4, 4, 'S');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(28);
+      doc.setTextColor(...RED);
+      doc.text('TEAM BRAVO', W/2, 82, { align: 'center' });
+
+      doc.setFontSize(13);
+      doc.setTextColor(...TEXT);
+      doc.text('AIP201 Knowledge Reasoning Essentials', W/2, 94, { align: 'center' });
+
+      doc.setFontSize(10);
+      doc.setTextColor(...MUTED);
+      doc.text('Deployment & System Configuration Report', W/2, 104, { align: 'center' });
+
+      const now = new Date();
+      doc.setFontSize(8.5);
+      doc.text(`Generated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`, W/2, 116, { align: 'center' });
+
+      // Owner block
+      doc.setFillColor(12, 15, 24);
+      doc.roundedRect(M, 148, W - M*2, 48, 3, 3, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...RED);
+      doc.text('SUBMITTED BY', M + 8, 158);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(...TEXT);
+      doc.text(spec.identity?.ownerName || '—', M + 8, 167);
+      doc.setFontSize(8.5);
+      doc.setTextColor(...MUTED);
+      doc.text(spec.identity?.ownerEmail || '—', M + 8, 174);
+      doc.text(`Cohort: ${spec.identity?.cohortId || '—'}`, M + 8, 181);
+      doc.text(`Course: ${spec.identity?.courseId || 'AIP201'}`, M + 8, 188);
+
+      // Status badge
+      doc.setFillColor(...RED);
+      doc.roundedRect(W - M - 52, 154, 52, 14, 3, 3, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(255, 255, 255);
+      doc.text('DEPLOYMENT COMPLETE', W - M - 26, 162.5, { align: 'center' });
+
+      // Footer
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...MUTED);
+      doc.text('Divergence Academy | Next Generation Console Theme', W/2, 268, { align: 'center' });
+
+      // ── Page 2: Identity & Environment ──
+      newPage();
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(...RED);
+      doc.text('System Configuration Report', M, y + 2);
+      y += 12;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...MUTED);
+      doc.text(`Workspace: ${spec.identity?.workspaceName || '—'} | Slug: ${spec.identity?.workspaceSlug || '—'}`, M, y);
+      y += 10;
+
+      section('Identity & Environment');
+      row('Owner', spec.identity?.ownerName);
+      row('Email', spec.identity?.ownerEmail);
+      row('Cohort', spec.identity?.cohortId);
+      row('Course', spec.identity?.courseId || 'AIP201');
+      row('Workspace', spec.identity?.workspaceName);
+      row('Environment', spec.environment?.name);
+      row('Cloud', spec.environment?.cloudProvider);
+      row('Region', spec.environment?.region);
+      hr();
+
+      section('Neo4j AuraDB (Sessions 2–8)');
+      row('URI', spec.neo4j?.uri);
+      row('Username', spec.neo4j?.user);
+      row('Tier', spec.neo4j?.tier);
+      row('Version', spec.neo4j?.version);
+      row('MCP Read-Only', spec.neo4j?.readOnly);
+      row('Graph Builder URL', spec.neo4j?.graphBuilderUrl);
+      hr();
+
+      section('Pinecone Vector Store (Sessions 5–8)');
+      row('Environment', spec.pinecone?.environment);
+      row('Index Name', spec.pinecone?.indexName);
+      row('Dimensions', spec.pinecone?.dimensions);
+      row('Top-K Results', spec.pinecone?.topK);
+      hr();
+
+      section('n8n Workflow Automation (Sessions 4–7)');
+      row('n8n URL', spec.n8n?.url);
+      row('Webhook Path', spec.n8n?.webhookPath);
+      row('Chunking Strategy', spec.n8n?.chunkStrategy);
+      row('Chunk Overlap', spec.n8n?.chunkOverlap + ' tokens');
+      row('Git Provider', spec.n8n?.gitProvider);
+      row('Repository', spec.n8n?.repoName);
+      hr();
+
+      // ── Page 3: AI + Schema ──
+      newPage();
+      section('AI & LLM Configuration (Sessions 5–8)');
+      row('LLM Provider', spec.ai?.llmProvider);
+      row('Model', spec.ai?.model);
+      row('Embedding Model', spec.ai?.embedModel);
+      row('Retrieval Mode', spec.ai?.retrievalMode);
+      row('MCP Server Type', spec.ai?.mcpType);
+      row('Claude Timeout', (spec.ai?.claudeTimeout || '30') + 's');
+      row('Max Cypher Retries', spec.ai?.cypherRetries);
+      hr();
+
+      section('Graph Schema — Capstone Domain (Sessions 1–4)');
+      row('Domain Name', spec.schema?.domainName);
+      row('Domain Type', spec.schema?.domainType);
+      hr();
+
+      if (spec.schema?.nodeLabels?.length > 0) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...RED);
+        doc.text('NODE LABELS', M, y);
+        y += 6;
+        spec.schema.nodeLabels.forEach((nl, i) => {
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(...TEXT);
+          doc.setFontSize(8.5);
+          doc.text(`  • ${nl}`, M, y);
+          y += 5.5;
+          if (y > 260) newPage();
+        });
+        y += 2;
+      }
+
+      if (spec.schema?.relationshipTypes?.length > 0) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...RED);
+        doc.text('RELATIONSHIP TYPES', M, y);
+        y += 6;
+        spec.schema.relationshipTypes.forEach((rt) => {
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(...TEXT);
+          doc.setFontSize(8.5);
+          doc.text(`  • ${rt}`, M, y);
+          y += 5.5;
+          if (y > 260) newPage();
+        });
+        y += 2;
+      }
+
+      if (spec.schema?.sampleQuery) {
+        hr();
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(...RED);
+        doc.text('SAMPLE MULTI-HOP QUERY', M, y);
+        y += 6;
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(...MUTED);
+        doc.setFontSize(8.5);
+        const lines = doc.splitTextToSize(`"${spec.schema.sampleQuery}"`, W - M*2 - 6);
+        lines.forEach(l => { doc.text(l, M + 3, y); y += 5.5; });
+        y += 2;
+      }
+
+      if (spec.schema?.indexProps) {
+        hr();
+        row('Cypher Indexes', spec.schema.indexProps);
+      }
+      hr();
+
+      // ── Page 4: Governance + MCP config ──
+      newPage();
+      section('Governance & Fallback Strategy (Session 7)');
+      row('Governance Mode', spec.governance?.mode);
+      row('Monthly Budget', '$' + (spec.governance?.monthlyBudget || '—'));
+      row('Alert Email', spec.governance?.alertEmail);
+      row('Neo4j Fallback', spec.governance?.fallbackNeo4j?.replace('_',' '));
+      row('Pinecone Fallback', spec.governance?.fallbackPinecone?.replace('_',' '));
+      row('Neo4j Timeout', (spec.governance?.timeouts?.neo4j || '10') + 's');
+      row('Pinecone Timeout', (spec.governance?.timeouts?.pinecone || '5') + 's');
+      row('Claude Timeout', (spec.governance?.timeouts?.claude || '30') + 's');
+      hr();
+
+      section('Session Progress');
+      row('Current Session', spec.governance?.currentSession + ' of 8');
+      row('Capstone Status', spec.governance?.capstoneStatus?.replace('_',' '));
+      hr();
+
+      section('Claude MCP Configuration (Session 6)');
+      y += 2;
+      const mcpJson = {
+        mcpServers: {
+          neo4j: {
+            command: 'npx',
+            args: ['-y', '@neo4j/mcp-neo4j'],
+            env: {
+              NEO4J_URI: spec.neo4j?.uri || 'neo4j+s://xxxxx.databases.neo4j.io',
+              NEO4J_USER: spec.neo4j?.user || 'neo4j',
+              NEO4J_PASSWORD: '<your-password>',
+              NEO4J_READ_ONLY: spec.neo4j?.readOnly || 'true'
+            }
+          }
+        }
+      };
+      const mcpLines = JSON.stringify(mcpJson, null, 2).split('\n');
+      doc.setFillColor(8, 10, 18);
+      doc.roundedRect(M, y, W - M*2, mcpLines.length * 4.8 + 6, 2, 2, 'F');
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...TEXT);
+      y += 5;
+      mcpLines.forEach(l => {
+        if (y > 260) newPage();
+        doc.text(l, M + 3, y);
+        y += 4.8;
+      });
+      y += 6;
+      hr();
+
+      section('Execution Log Summary');
+      y += 2;
+      doc.setFillColor(8, 10, 18);
+      const logLines = deploymentLog.slice(0, 40);
+      doc.roundedRect(M, y, W - M*2, logLines.length * 4.5 + 6, 2, 2, 'F');
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(6.8);
+      y += 5;
+      logLines.forEach(l => {
+        if (y > 265) newPage();
+        doc.setTextColor(l.includes('✓') ? 100 : l.includes('⚠') ? 200 : 140,
+                         l.includes('✓') ? 220 : l.includes('⚠') ? 150 : 148,
+                         l.includes('✓') ? 100 : l.includes('⚠') ? 0   : 180);
+        const truncated = l.length > 90 ? l.substring(0, 90) + '…' : l;
+        doc.text(truncated, M + 3, y);
+        y += 4.5;
+      });
+
+      // Footer on last page
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...MUTED);
+      doc.text(`TEAM BRAVO | AIP201 | ${spec.identity?.ownerName || ''} | Generated ${now.toLocaleDateString()}`, W/2, 274, { align: 'center' });
+      doc.setFillColor(...RED);
+      doc.rect(0, 277.4, W, 2, 'F');
+
+      const filename = `AIP201_${(spec.identity?.workspaceSlug || 'team-bravo').replace(/[^a-z0-9]/gi,'_')}_deployment_report.pdf`;
+      doc.save(filename);
+    }
+
+    function downloadJSON() {
+      const blob = new Blob([JSON.stringify(currentSpec, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `AIP201_spec_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+    }
+
+    deployBtn.addEventListener('click', run);
+    runBtn.addEventListener('click', run);
+    resetBtn.addEventListener('click', () => {
+      log.textContent = '';
+      deploymentLog = [];
+      pdfBtn.disabled = true;
+      jsonBtn.disabled = true;
+      phaseLabel.textContent = 'READY';
+      deployBtn.classList.remove('running');
+      runBtn.disabled = false;
+      buildStepList();
+    });
+
+    buildStepList();
+    loadSpec();
+  </script>
+</body>
+</html>

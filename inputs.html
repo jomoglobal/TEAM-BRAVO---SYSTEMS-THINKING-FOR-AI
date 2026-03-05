@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TEAM BRAVO | Inputs</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .section-block { margin-top: 24px; }
+    .section-block .section-title { margin-bottom: 12px; }
+    .input-note { font-size:11px; color:var(--muted); margin-top:4px; font-family:var(--mono); }
+    .tag-input-row { display:flex; gap:8px; align-items:flex-start; }
+    .tag-input-row input { flex:1; }
+    .tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+    .tag { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px;
+           border:1px solid rgba(255,45,45,.30); background:rgba(255,45,45,.08);
+           font-size:11px; font-family:var(--mono); }
+    .tag button { background:none; border:none; color:var(--red); cursor:pointer; font-size:13px; padding:0; line-height:1; }
+    .status-pill { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-family:var(--mono);
+                   padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.12);
+                   background:rgba(255,255,255,.04); }
+    .status-pill.ok { border-color:rgba(0,220,100,.30); background:rgba(0,220,100,.08); color:#00dc64; }
+    .status-pill.warn { border-color:rgba(255,180,0,.30); background:rgba(255,180,0,.08); color:#ffb400; }
+    .tab-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+    .tab-btn { padding:8px 14px; border-radius:999px; border:1px solid rgba(255,45,45,.22);
+               background:rgba(5,6,8,.35); font-family:var(--mono); font-size:12px; cursor:pointer; color:var(--text); }
+    .tab-btn.active { background:rgba(255,45,45,.14); box-shadow:0 0 0 1px rgba(255,45,45,.26); }
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
+    .progress-bar { height:4px; background:rgba(255,45,45,.12); border-radius:999px; margin:16px 0; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--red),var(--red2)); border-radius:999px; transition:width .4s; }
+    .checklist { list-style:none; padding:0; margin:0; }
+    .checklist li { display:flex; align-items:center; gap:10px; padding:8px 0;
+                    border-bottom:1px solid rgba(255,45,45,.08); font-size:13px; color:var(--muted); }
+    .checklist li.done { color:var(--text); }
+    .checklist li .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,45,45,.25); flex-shrink:0; }
+    .checklist li.done .dot { background:var(--red); box-shadow:0 0 8px var(--glow); }
+  </style>
+</head>
+<body class="bg-inputs">
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="brand">
+        <img src="assets/topbar_logo.png" alt="TEAM BRAVO logo" />
+        <div class="title">
+          <b>TEAM BRAVO</b>
+          <span>AIP201 Knowledge Reasoning — Setup Console</span>
+        </div>
+      </div>
+      <div class="nav">
+        <a href="index.html">HOME</a>
+        <a href="inputs.html" class="active">INPUTS</a>
+        <a href="button.html">BUTTON</a>
+      </div>
+    </div>
+
+    <div class="hero" style="grid-template-columns:1fr 1.1fr; margin-top:22px;">
+
+      <!-- LEFT: Tabbed form -->
+      <div class="card" style="overflow-y:auto; max-height:88vh;">
+
+        <p class="section-title">Deployment specification builder</p>
+        <p class="sub" style="margin-bottom:16px;">Complete all tabs. The spec feeds directly into the one-button deployment and your downloadable PDF report.</p>
+
+        <div class="tab-row">
+          <button class="tab-btn active" onclick="switchTab('identity')">① Identity</button>
+          <button class="tab-btn" onclick="switchTab('neo4j')">② Neo4j</button>
+          <button class="tab-btn" onclick="switchTab('pinecone')">③ Pinecone</button>
+          <button class="tab-btn" onclick="switchTab('n8n')">④ n8n</button>
+          <button class="tab-btn" onclick="switchTab('ai')">⑤ AI / LLM</button>
+          <button class="tab-btn" onclick="switchTab('schema')">⑥ Graph Schema</button>
+          <button class="tab-btn" onclick="switchTab('governance')">⑦ Governance</button>
+        </div>
+
+        <!-- TAB 1: Identity -->
+        <div id="tab-identity" class="tab-pane active">
+          <div class="section-block">
+            <p class="section-title">Workspace identity</p>
+            <div class="grid2">
+              <div>
+                <label>Workspace name</label>
+                <input id="workspaceName" placeholder="TEAM BRAVO Suite" oninput="render()" />
+              </div>
+              <div>
+                <label>Workspace slug</label>
+                <input id="workspaceSlug" placeholder="team-bravo" oninput="render()" />
+              </div>
+            </div>
+            <div class="grid2">
+              <div>
+                <label>Primary owner name</label>
+                <input id="ownerName" placeholder="Christopher Reid" oninput="render()" />
+              </div>
+              <div>
+                <label>Primary owner email</label>
+                <input id="ownerEmail" placeholder="name@example.com" oninput="render()" />
+              </div>
+            </div>
+            <div class="grid2" style="margin-top:4px;">
+              <div>
+                <label>Cohort / class ID</label>
+                <input id="cohortId" placeholder="2026-01-IAI-WDX" oninput="render()" />
+              </div>
+              <div>
+                <label>Course</label>
+                <select id="courseId" oninput="render()">
+                  <option value="AIP201">AIP201 — Knowledge Reasoning Essentials</option>
+                  <option value="AIP101">AIP101 — RAG Foundations</option>
+                  <option value="AIP301">AIP301 — Advanced AI Systems</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Target environment</p>
+            <div class="grid3">
+              <div>
+                <label>Environment</label>
+                <select id="envName" oninput="render()">
+                  <option value="dev">dev</option>
+                  <option value="staging">staging</option>
+                  <option value="prod">prod</option>
+                  <option value="demo">demo</option>
+                </select>
+              </div>
+              <div>
+                <label>Cloud provider</label>
+                <select id="cloudProvider" oninput="render()">
+                  <option value="azure">Azure</option>
+                  <option value="aws">AWS</option>
+                  <option value="gcp">GCP</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div>
+                <label>Region</label>
+                <input id="region" placeholder="eastus" oninput="render()" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Neo4j -->
+        <div id="tab-neo4j" class="tab-pane">
+          <div class="section-block">
+            <p class="section-title">Neo4j AuraDB configuration</p>
+            <p class="sub">Required for graph storage and Cypher queries (Sessions 2–8).</p>
+            <label>AuraDB connection URI</label>
+            <input id="neo4jUri" placeholder="neo4j+s://xxxxxxxx.databases.neo4j.io" oninput="render()" />
+            <div class="input-note">Find this in console.neo4j.io → your instance → Connect</div>
+            <div class="grid2" style="margin-top:4px;">
+              <div>
+                <label>Neo4j username</label>
+                <input id="neo4jUser" placeholder="neo4j" oninput="render()" />
+              </div>
+              <div>
+                <label>Neo4j password</label>
+                <input id="neo4jPassword" type="password" placeholder="••••••••••" oninput="render()" />
+              </div>
+            </div>
+            <div class="grid2">
+              <div>
+                <label>AuraDB tier</label>
+                <select id="neo4jTier" oninput="render()">
+                  <option value="free">Free (200K nodes / 400K rels)</option>
+                  <option value="professional">Professional</option>
+                  <option value="enterprise">Enterprise</option>
+                </select>
+              </div>
+              <div>
+                <label>Neo4j version</label>
+                <select id="neo4jVersion" oninput="render()">
+                  <option value="5.x">5.x (vector index supported)</option>
+                  <option value="4.x">4.x</option>
+                </select>
+              </div>
+            </div>
+            <label>MCP read-only mode</label>
+            <select id="neo4jReadOnly" oninput="render()">
+              <option value="true">Yes — read-only (recommended for Claude MCP)</option>
+              <option value="false">No — read/write</option>
+            </select>
+            <div class="input-note">Session 6: Claude MCP uses read-only for safety.</div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">LLM Graph Builder</p>
+            <label>Graph Builder URL</label>
+            <input id="graphBuilderUrl" placeholder="https://llm-graph-builder.neo4jlabs.com/" oninput="render()" />
+            <div class="input-note">Session 3: Used for automated entity extraction from documents.</div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Pinecone -->
+        <div id="tab-pinecone" class="tab-pane">
+          <div class="section-block">
+            <p class="section-title">Pinecone vector store</p>
+            <p class="sub">Required for semantic/vector search in hybrid retrieval (Sessions 5–8).</p>
+            <label>Pinecone API key</label>
+            <input id="pineconeKey" type="password" placeholder="••••••••••" oninput="render()" />
+            <div class="grid2">
+              <div>
+                <label>Pinecone environment</label>
+                <input id="pineconeEnv" placeholder="us-east-1-aws" oninput="render()" />
+              </div>
+              <div>
+                <label>Index name</label>
+                <input id="pineconeIndex" placeholder="bravo-knowledge" oninput="render()" />
+              </div>
+            </div>
+            <div class="grid2">
+              <div>
+                <label>Embedding dimensions</label>
+                <select id="pineconeDims" oninput="render()">
+                  <option value="1536">1536 (text-embedding-ada-002)</option>
+                  <option value="3072">3072 (text-embedding-3-large)</option>
+                  <option value="768">768 (other)</option>
+                </select>
+              </div>
+              <div>
+                <label>Top-K results</label>
+                <input id="pineconeTopK" placeholder="5" oninput="render()" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: n8n -->
+        <div id="tab-n8n" class="tab-pane">
+          <div class="section-block">
+            <p class="section-title">n8n workflow automation</p>
+            <p class="sub">Required for document-to-graph pipelines and hybrid retrieval workflows (Sessions 4–7).</p>
+            <div class="grid2">
+              <div>
+                <label>n8n instance URL</label>
+                <input id="n8nUrl" placeholder="https://your-n8n.app.n8n.cloud" oninput="render()" />
+              </div>
+              <div>
+                <label>n8n API key</label>
+                <input id="n8nKey" type="password" placeholder="••••••••••" oninput="render()" />
+              </div>
+            </div>
+            <label>Webhook base path</label>
+            <input id="n8nWebhook" placeholder="/hybrid-query" oninput="render()" />
+            <div class="input-note">Session 5: POST endpoint for hybrid retrieval queries.</div>
+            <div class="grid2">
+              <div>
+                <label>Chunking strategy</label>
+                <select id="chunkStrategy" oninput="render()">
+                  <option value="graph">Graph-optimized (500–1000 tokens)</option>
+                  <option value="vector">Vector-optimized (300–500 tokens)</option>
+                  <option value="hybrid">Hybrid (both)</option>
+                </select>
+              </div>
+              <div>
+                <label>Chunk overlap (tokens)</label>
+                <input id="chunkOverlap" placeholder="50" oninput="render()" />
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Git repository</p>
+            <div class="grid2">
+              <div>
+                <label>Git provider</label>
+                <select id="gitProvider" oninput="render()">
+                  <option value="github">GitHub</option>
+                  <option value="gitlab">GitLab</option>
+                  <option value="azuredevops">Azure DevOps</option>
+                  <option value="bitbucket">Bitbucket</option>
+                </select>
+              </div>
+              <div>
+                <label>Repository name</label>
+                <input id="repoName" placeholder="bravo-knowledge-graph" oninput="render()" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: AI / LLM -->
+        <div id="tab-ai" class="tab-pane">
+          <div class="section-block">
+            <p class="section-title">LLM provider</p>
+            <div class="grid2">
+              <div>
+                <label>Primary LLM</label>
+                <select id="llmProvider" oninput="render()">
+                  <option value="anthropic">Anthropic (Claude)</option>
+                  <option value="azure_openai">Azure OpenAI</option>
+                  <option value="openai">OpenAI</option>
+                  <option value="google">Google Gemini</option>
+                  <option value="local">Local model</option>
+                </select>
+              </div>
+              <div>
+                <label>Model name</label>
+                <input id="llmModel" placeholder="claude-sonnet-4-20250514" oninput="render()" />
+              </div>
+            </div>
+            <label>LLM API key</label>
+            <input id="llmKey" type="password" placeholder="••••••••••" oninput="render()" />
+            <div class="grid2">
+              <div>
+                <label>Embedding model</label>
+                <select id="embedModel" oninput="render()">
+                  <option value="text-embedding-ada-002">text-embedding-ada-002 (OpenAI)</option>
+                  <option value="text-embedding-3-large">text-embedding-3-large (OpenAI)</option>
+                  <option value="claude-embed">Claude embed (Anthropic)</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label>Retrieval mode</label>
+                <select id="retrievalMode" oninput="render()">
+                  <option value="hybrid">Hybrid (vector + graph)</option>
+                  <option value="vector">Vector only</option>
+                  <option value="graph">Graph only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Claude MCP configuration (Session 6)</p>
+            <label>MCP server type</label>
+            <select id="mcpType" oninput="render()">
+              <option value="neo4j">Neo4j MCP (@neo4j/mcp-neo4j)</option>
+              <option value="custom">Custom MCP server</option>
+              <option value="none">Not configured yet</option>
+            </select>
+            <div class="grid2" style="margin-top:4px;">
+              <div>
+                <label>Claude timeout (seconds)</label>
+                <input id="claudeTimeout" placeholder="30" oninput="render()" />
+              </div>
+              <div>
+                <label>Max Cypher retries</label>
+                <input id="cypherRetries" placeholder="2" oninput="render()" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: Graph Schema -->
+        <div id="tab-schema" class="tab-pane">
+          <div class="section-block">
+            <p class="section-title">Capstone domain</p>
+            <div class="grid2">
+              <div>
+                <label>Domain name</label>
+                <input id="domainName" placeholder="e.g. Military Unit Structure" oninput="render()" />
+              </div>
+              <div>
+                <label>Domain type</label>
+                <select id="domainType" oninput="render()">
+                  <option value="military">Military / Defense</option>
+                  <option value="project">Project / Team</option>
+                  <option value="supply_chain">Supply Chain</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="cyber">Cyber / Security</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Node labels (entity types)</p>
+            <p class="input-note" style="margin-bottom:8px;">Add 5–8 node types. Each becomes a Neo4j label.</p>
+            <div class="tag-input-row">
+              <input id="nodeInput" placeholder="e.g. Person, Unit, Mission..." onkeydown="addTag(event,'nodeInput','nodeTags')" />
+              <button class="btn" onclick="addTagBtn('nodeInput','nodeTags')">Add</button>
+            </div>
+            <div class="tag-list" id="nodeTags"></div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Relationship types</p>
+            <p class="input-note" style="margin-bottom:8px;">Add 6+ relationship types. Use UPPER_SNAKE_CASE.</p>
+            <div class="tag-input-row">
+              <input id="relInput" placeholder="e.g. WORKS_IN, HAS_SKILL, REPORTS_TO..." onkeydown="addTag(event,'relInput','relTags')" />
+              <button class="btn" onclick="addTagBtn('relInput','relTags')">Add</button>
+            </div>
+            <div class="tag-list" id="relTags"></div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Sample multi-hop query</p>
+            <label>3+ hop query (Session 1 design)</label>
+            <textarea id="sampleQuery" rows="3" placeholder="e.g. Who trained the person who led the mission that used Equipment X?" oninput="render()"></textarea>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Cypher indexes to create</p>
+            <label>Properties to index (comma separated)</label>
+            <input id="indexProps" placeholder="Person.name, Project.name, Unit.id" oninput="render()" />
+            <div class="input-note">Session 7: Added automatically during hardening step.</div>
+          </div>
+        </div>
+
+        <!-- TAB 7: Governance -->
+        <div id="tab-governance" class="tab-pane">
+          <div class="section-block">
+            <p class="section-title">FinOps and governance</p>
+            <div class="grid2">
+              <div>
+                <label>Governance mode</label>
+                <select id="governanceMode" oninput="render()">
+                  <option value="baseline">Baseline</option>
+                  <option value="enterprise">Enterprise</option>
+                  <option value="regulated">Regulated</option>
+                </select>
+              </div>
+              <div>
+                <label>Monthly budget ($)</label>
+                <input id="budget" placeholder="2500" oninput="render()" />
+              </div>
+            </div>
+            <label>Alert email</label>
+            <input id="notifyEmail" placeholder="alerts@example.com" oninput="render()" />
+          </div>
+          <div class="section-block">
+            <p class="section-title">Fallback strategy (Session 7)</p>
+            <label>If Neo4j is unavailable</label>
+            <select id="fallbackNeo4j" oninput="render()">
+              <option value="vector_only">Fall back to vector-only search</option>
+              <option value="error">Return error to user</option>
+              <option value="claude_knowledge">Use Claude built-in knowledge</option>
+            </select>
+            <label>If Pinecone is unavailable</label>
+            <select id="fallbackPinecone" oninput="render()">
+              <option value="graph_only">Fall back to graph-only search</option>
+              <option value="error">Return error to user</option>
+              <option value="claude_knowledge">Use Claude built-in knowledge</option>
+            </select>
+            <div class="grid3">
+              <div>
+                <label>Neo4j timeout (s)</label>
+                <input id="timeoutNeo4j" placeholder="10" oninput="render()" />
+              </div>
+              <div>
+                <label>Pinecone timeout (s)</label>
+                <input id="timeoutPinecone" placeholder="5" oninput="render()" />
+              </div>
+              <div>
+                <label>Claude timeout (s)</label>
+                <input id="timeoutClaude" placeholder="30" oninput="render()" />
+              </div>
+            </div>
+          </div>
+          <div class="section-block">
+            <p class="section-title">Capstone session tracking</p>
+            <div class="grid2">
+              <div>
+                <label>Current session (1–8)</label>
+                <select id="currentSession" oninput="render()">
+                  <option value="1">Session 1 — Graph Thinking</option>
+                  <option value="2">Session 2 — Cypher & Neo4j Foundations</option>
+                  <option value="3">Session 3 — Automated Graph Construction</option>
+                  <option value="4">Session 4 — Document-to-Graph Pipelines</option>
+                  <option value="5">Session 5 — Hybrid Retrieval Architecture</option>
+                  <option value="6">Session 6 — Claude MCP + Neo4j</option>
+                  <option value="7">Session 7 — Production Patterns</option>
+                  <option value="8">Session 8 — Capstone Presentations</option>
+                </select>
+              </div>
+              <div>
+                <label>Capstone status</label>
+                <select id="capstoneStatus" oninput="render()">
+                  <option value="not_started">Not started</option>
+                  <option value="in_progress">In progress</option>
+                  <option value="demo_ready">Demo ready</option>
+                  <option value="presented">Presented</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="sep" style="margin-top:24px;" />
+        <div class="btnrow">
+          <button class="btn" id="saveSpec">💾 Save spec</button>
+          <button class="btn" id="clearSpec" style="border-color:rgba(255,255,255,.12);">Clear</button>
+          <a class="btn" href="button.html">→ Proceed to deployment</a>
+          <span class="small" id="savedState"></span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Live preview + checklist -->
+      <div style="display:flex; flex-direction:column; gap:14px;">
+
+        <div class="card">
+          <p class="section-title">Readiness checklist</p>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          <span class="small" id="progressLabel">0 / 7 sections complete</span>
+          <ul class="checklist" id="checklist" style="margin-top:12px;">
+            <li id="chk-identity"><span class="dot"></span> Identity & environment</li>
+            <li id="chk-neo4j"><span class="dot"></span> Neo4j AuraDB credentials</li>
+            <li id="chk-pinecone"><span class="dot"></span> Pinecone vector store</li>
+            <li id="chk-n8n"><span class="dot"></span> n8n workflow endpoint</li>
+            <li id="chk-ai"><span class="dot"></span> LLM / AI configuration</li>
+            <li id="chk-schema"><span class="dot"></span> Graph schema defined</li>
+            <li id="chk-governance"><span class="dot"></span> Governance & fallbacks</li>
+          </ul>
+        </div>
+
+        <div class="card" style="flex:1;">
+          <p class="section-title">Live spec preview</p>
+          <div class="console" id="specPreview" style="height:320px;"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    // ── Tab switching ──
+    function switchTab(name) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      event.target.classList.add('active');
+      render();
+    }
+
+    // ── Tag inputs ──
+    const tagData = { nodeTags: [], relTags: [] };
+    function addTag(e, inputId, listId) {
+      if (e.key === 'Enter') { e.preventDefault(); addTagBtn(inputId, listId); }
+    }
+    function addTagBtn(inputId, listId) {
+      const input = document.getElementById(inputId);
+      const val = input.value.trim();
+      if (!val) return;
+      val.split(',').forEach(v => {
+        const t = v.trim();
+        if (t && !tagData[listId].includes(t)) tagData[listId].push(t);
+      });
+      input.value = '';
+      renderTags(listId);
+      render();
+    }
+    function removeTag(listId, val) {
+      tagData[listId] = tagData[listId].filter(t => t !== val);
+      renderTags(listId);
+      render();
+    }
+    function renderTags(listId) {
+      const el = document.getElementById(listId);
+      el.innerHTML = tagData[listId].map(t =>
+        `<span class="tag">${t}<button onclick="removeTag('${listId}','${t}')" title="Remove">×</button></span>`
+      ).join('');
+    }
+
+    // ── Field helpers ──
+    const f = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+
+    // ── Build spec object ──
+    function buildSpec() {
+      return {
+        meta: { version: 'v3', course: 'AIP201', updatedAt: new Date().toISOString() },
+        identity: { workspaceName: f('workspaceName'), workspaceSlug: f('workspaceSlug'),
+                    ownerName: f('ownerName'), ownerEmail: f('ownerEmail'),
+                    cohortId: f('cohortId'), courseId: f('courseId') },
+        environment: { name: f('envName'), cloudProvider: f('cloudProvider'), region: f('region') },
+        neo4j: { uri: f('neo4jUri'), user: f('neo4jUser'), passwordSet: !!f('neo4jPassword'),
+                 tier: f('neo4jTier'), version: f('neo4jVersion'), readOnly: f('neo4jReadOnly'),
+                 graphBuilderUrl: f('graphBuilderUrl') },
+        pinecone: { keySet: !!f('pineconeKey'), environment: f('pineconeEnv'),
+                    indexName: f('pineconeIndex'), dimensions: f('pineconeDims'), topK: f('pineconeTopK') },
+        n8n: { url: f('n8nUrl'), keySet: !!f('n8nKey'), webhookPath: f('n8nWebhook'),
+               chunkStrategy: f('chunkStrategy'), chunkOverlap: f('chunkOverlap'),
+               gitProvider: f('gitProvider'), repoName: f('repoName') },
+        ai: { llmProvider: f('llmProvider'), model: f('llmModel'), keySet: !!f('llmKey'),
+              embedModel: f('embedModel'), retrievalMode: f('retrievalMode'),
+              mcpType: f('mcpType'), claudeTimeout: f('claudeTimeout'), cypherRetries: f('cypherRetries') },
+        schema: { domainName: f('domainName'), domainType: f('domainType'),
+                  nodeLabels: tagData.nodeTags, relationshipTypes: tagData.relTags,
+                  sampleQuery: f('sampleQuery'), indexProps: f('indexProps') },
+        governance: { mode: f('governanceMode'), monthlyBudget: f('budget'), alertEmail: f('notifyEmail'),
+                      fallbackNeo4j: f('fallbackNeo4j'), fallbackPinecone: f('fallbackPinecone'),
+                      timeouts: { neo4j: f('timeoutNeo4j'), pinecone: f('timeoutPinecone'), claude: f('timeoutClaude') },
+                      currentSession: f('currentSession'), capstoneStatus: f('capstoneStatus') }
+      };
+    }
+
+    // ── Readiness check ──
+    function checkReadiness(spec) {
+      const checks = {
+        identity: !!(spec.identity.ownerName && spec.identity.workspaceName && spec.identity.cohortId),
+        neo4j: !!(spec.neo4j.uri && spec.neo4j.user && spec.neo4j.passwordSet),
+        pinecone: !!(spec.pinecone.keySet && spec.pinecone.indexName),
+        n8n: !!(spec.n8n.url && spec.n8n.webhookPath),
+        ai: !!(spec.ai.llmProvider && spec.ai.keySet),
+        schema: !!(spec.schema.domainName && spec.schema.nodeLabels.length >= 3 && spec.schema.relationshipTypes.length >= 3),
+        governance: !!(spec.governance.mode && spec.governance.alertEmail)
+      };
+      const done = Object.values(checks).filter(Boolean).length;
+      const total = Object.keys(checks).length;
+      document.getElementById('progressFill').style.width = Math.round(done/total*100) + '%';
+      document.getElementById('progressLabel').textContent = `${done} / ${total} sections complete`;
+      Object.keys(checks).forEach(k => {
+        const li = document.getElementById('chk-' + k);
+        if (!li) return;
+        li.classList.toggle('done', checks[k]);
+        li.querySelector('.dot').style.background = checks[k] ? 'var(--red)' : '';
+      });
+      return done === total;
+    }
+
+    // ── Render ──
+    function render() {
+      const spec = buildSpec();
+      document.getElementById('specPreview').textContent = JSON.stringify(spec, null, 2);
+      checkReadiness(spec);
+    }
+
+    // ── Load saved spec ──
+    function loadSpec() {
+      const s = BravoSpec.getSpec();
+      if (!s || !s.identity) { render(); return; }
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+      set('workspaceName', s.identity?.workspaceName);
+      set('workspaceSlug', s.identity?.workspaceSlug);
+      set('ownerName', s.identity?.ownerName);
+      set('ownerEmail', s.identity?.ownerEmail);
+      set('cohortId', s.identity?.cohortId);
+      set('courseId', s.identity?.courseId);
+      set('envName', s.environment?.name);
+      set('cloudProvider', s.environment?.cloudProvider);
+      set('region', s.environment?.region);
+      set('neo4jUri', s.neo4j?.uri);
+      set('neo4jUser', s.neo4j?.user);
+      set('neo4jTier', s.neo4j?.tier);
+      set('neo4jVersion', s.neo4j?.version);
+      set('neo4jReadOnly', s.neo4j?.readOnly);
+      set('graphBuilderUrl', s.neo4j?.graphBuilderUrl);
+      set('pineconeEnv', s.pinecone?.environment);
+      set('pineconeIndex', s.pinecone?.indexName);
+      set('pineconeDims', s.pinecone?.dimensions);
+      set('pineconeTopK', s.pinecone?.topK);
+      set('n8nUrl', s.n8n?.url);
+      set('n8nWebhook', s.n8n?.webhookPath);
+      set('chunkStrategy', s.n8n?.chunkStrategy);
+      set('chunkOverlap', s.n8n?.chunkOverlap);
+      set('gitProvider', s.n8n?.gitProvider);
+      set('repoName', s.n8n?.repoName);
+      set('llmProvider', s.ai?.llmProvider);
+      set('llmModel', s.ai?.model);
+      set('embedModel', s.ai?.embedModel);
+      set('retrievalMode', s.ai?.retrievalMode);
+      set('mcpType', s.ai?.mcpType);
+      set('claudeTimeout', s.ai?.claudeTimeout);
+      set('cypherRetries', s.ai?.cypherRetries);
+      set('domainName', s.schema?.domainName);
+      set('domainType', s.schema?.domainType);
+      if (s.schema?.nodeLabels) { tagData.nodeTags = s.schema.nodeLabels; renderTags('nodeTags'); }
+      if (s.schema?.relationshipTypes) { tagData.relTags = s.schema.relationshipTypes; renderTags('relTags'); }
+      set('sampleQuery', s.schema?.sampleQuery);
+      set('indexProps', s.schema?.indexProps);
+      set('governanceMode', s.governance?.mode);
+      set('budget', s.governance?.monthlyBudget);
+      set('notifyEmail', s.governance?.alertEmail);
+      set('fallbackNeo4j', s.governance?.fallbackNeo4j);
+      set('fallbackPinecone', s.governance?.fallbackPinecone);
+      set('timeoutNeo4j', s.governance?.timeouts?.neo4j);
+      set('timeoutPinecone', s.governance?.timeouts?.pinecone);
+      set('timeoutClaude', s.governance?.timeouts?.claude);
+      set('currentSession', s.governance?.currentSession);
+      set('capstoneStatus', s.governance?.capstoneStatus);
+      render();
+    }
+
+    document.getElementById('saveSpec').addEventListener('click', () => {
+      BravoSpec.setSpec(buildSpec());
+      document.getElementById('savedState').textContent = 'Saved ' + new Date().toLocaleTimeString();
+      render();
+    });
+    document.getElementById('clearSpec').addEventListener('click', () => {
+      if (confirm('Clear all saved spec data?')) {
+        localStorage.removeItem(BravoSpec.KEY);
+        location.reload();
+      }
+    });
+
+    loadSpec();
+  </script>
+</body>
+</html>
