@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<!-- saved from url=(0149)file:///C:/Users/xP4R4/Desktop/Bravo%20Systems%20Thinking%20for%20AI%20Websites/Ver.%2005/bravo-agentic-governance-architecture/finops-dashboard.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FinOps Cost Governance Dashboard — Ætheris AWCMP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
+:root {
+  --bg:#0a0b0e; --bg2:#0e1014; --surface:#12141a; --surface2:#171921;
+  --panel:#1c1f28; --panel2:#222533; --border:#2a2d3e; --border2:#363a52;
+  --glow:#4f7fff; --cyan:#00d4ff; --gold:#f5c842; --green:#2dffb0;
+  --red:#ff4f6b; --orange:#ff8c42; --text:#e8eaf2; --text2:#9ba3c4; --text3:#5a6080;
+  --mono:'JetBrains Mono',monospace; --display:'Syne',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--display);font-size:14px;line-height:1.6;min-height:100vh;
+  background-image:linear-gradient(rgba(79,127,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(79,127,255,0.02) 1px,transparent 1px);
+  background-size:40px 40px;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:var(--border2);}
+
+.top-bar{background:rgba(10,11,14,0.97);border-bottom:1px solid var(--border);padding:0.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.top-bar-left{display:flex;align-items:center;gap:0.75rem;}
+.brand{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--cyan);}
+.breadcrumb{font-family:var(--mono);font-size:0.62rem;color:var(--text3);}
+.breadcrumb a{color:var(--text3);text-decoration:none;} .breadcrumb a:hover{color:var(--text2);}
+.live-badge{font-family:var(--mono);font-size:0.6rem;color:var(--green);border:1px solid rgba(45,255,176,0.3);padding:0.2rem 0.6rem;background:rgba(45,255,176,0.05);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
+.top-bar-right{display:flex;align-items:center;gap:1rem;}
+.ts{font-family:var(--mono);font-size:0.65rem;color:var(--text3);}
+
+.main{max-width:1400px;margin:0 auto;padding:1.5rem;}
+.page-title{font-size:1.6rem;font-weight:800;color:var(--text);margin-bottom:0.25rem;}
+.page-sub{font-family:var(--mono);font-size:0.7rem;color:var(--text3);margin-bottom:1.5rem;}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);margin-bottom:1.5rem;}
+.kpi{background:var(--surface);padding:1rem;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-c::before{background:var(--cyan);}
+.kpi-g::before{background:var(--green);}
+.kpi-gold::before{background:var(--gold);}
+.kpi-r::before{background:var(--red);}
+.kpi-b::before{background:var(--glow);}
+.kpi-o::before{background:var(--orange);}
+.kpi-label{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.35rem;}
+.kpi-val{font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--text);line-height:1.1;}
+.kpi-val.up{color:var(--green);}
+.kpi-val.down{color:var(--red);}
+.kpi-delta{font-family:var(--mono);font-size:0.62rem;color:var(--text3);margin-top:0.2rem;}
+.kpi-delta.pos{color:var(--green);} .kpi-delta.neg{color:var(--red);}
+
+/* GRID LAYOUTS */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-bottom:1.5rem;}
+.row3{display:grid;grid-template-columns:2fr 1fr;gap:1px;background:var(--border);margin-bottom:1.5rem;}
+.panel{background:var(--surface);padding:1.25rem;}
+.panel-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;}
+.panel-title .highlight{color:var(--cyan);}
+
+/* CHARTS */
+canvas{width:100%;display:block;}
+.chart-wrap{position:relative;}
+
+/* SESSION TABLE */
+.session-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.7rem;}
+.session-table th{color:var(--text3);font-weight:500;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);text-align:left;letter-spacing:0.06em;font-size:0.62rem;text-transform:uppercase;}
+.session-table td{padding:0.45rem 0.6rem;border-bottom:1px solid var(--border);color:var(--text2);}
+.session-table tr:hover td{background:var(--panel);}
+.status-ok{color:var(--green);}
+.status-warn{color:var(--gold);}
+.status-alert{color:var(--red);}
+.status-block{color:var(--red);font-weight:700;}
+
+/* ALERT FEED */
+.alert-feed{display:flex;flex-direction:column;gap:4px;max-height:320px;overflow-y:auto;}
+.alert-item{display:flex;gap:0.6rem;padding:0.5rem 0.75rem;border-left:2px solid;font-family:var(--mono);font-size:0.68rem;}
+.al-ok{border-color:var(--green);background:rgba(45,255,176,0.04);}
+.al-warn{border-color:var(--gold);background:rgba(245,200,66,0.05);}
+.al-alert{border-color:var(--orange);background:rgba(255,140,66,0.05);}
+.al-block{border-color:var(--red);background:rgba(255,79,107,0.07);}
+.al-time{color:var(--text3);flex-shrink:0;width:50px;}
+.al-type{flex-shrink:0;width:58px;}
+.al-ok .al-type{color:var(--green);}
+.al-warn .al-type{color:var(--gold);}
+.al-alert .al-type{color:var(--orange);}
+.al-block .al-type{color:var(--red);}
+.al-msg{color:var(--text2);}
+
+/* FORMULA PANEL */
+.formula-block{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--glow);padding:1rem 1.25rem;font-family:var(--mono);font-size:0.72rem;margin-top:0.75rem;}
+.f-line{color:var(--text2);padding:0.2rem 0;line-height:1.7;}
+.f-line .sym{color:var(--cyan);}
+
+/* COST MODEL CONTROLS */
+.controls-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;}
+.ctrl-group{display:flex;flex-direction:column;gap:0.3rem;}
+.ctrl-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.62rem;color:var(--text3);}
+.ctrl-label span:last-child{color:var(--cyan);}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--border2);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--glow);cursor:pointer;box-shadow:0 0 6px rgba(79,127,255,0.5);}
+
+/* PROVIDER COMPARISON */
+.provider-row{display:flex;flex-direction:column;gap:0.4rem;}
+.prov-item{display:flex;align-items:center;gap:0.75rem;}
+.prov-name{font-family:var(--mono);font-size:0.68rem;color:var(--text2);width:130px;flex-shrink:0;}
+.prov-bar-wrap{flex:1;height:6px;background:var(--border2);border-radius:3px;overflow:hidden;}
+.prov-bar{height:100%;border-radius:3px;transition:width 0.5s;}
+.prov-val{font-family:var(--mono);font-size:0.68rem;color:var(--text);width:60px;text-align:right;}
+
+/* TASK CLASS */
+.task-class-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+.tc-item{background:var(--panel);border:1px solid var(--border);padding:0.75rem;}
+.tc-name{font-family:var(--mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:0.25rem;}
+.tc-cost{font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--gold);}
+.tc-pct{font-family:var(--mono);font-size:0.62rem;color:var(--text3);}
+.tc-bar-wrap{height:3px;background:var(--border2);border-radius:2px;margin-top:0.5rem;}
+.tc-bar{height:100%;border-radius:2px;}
+
+/* BUDGET GAUGE */
+.budget-gauge{text-align:center;padding:1rem 0;}
+.gauge-label{font-family:var(--mono);font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;}
+.gauge-val{font-family:var(--mono);font-size:2rem;font-weight:700;}
+.gauge-sub{font-family:var(--mono);font-size:0.65rem;color:var(--text3);margin-top:0.25rem;}
+
+/* DISCLAIMER */
+.disclaimer-bar{background:rgba(255,140,66,0.05);border:1px solid rgba(255,140,66,0.2);padding:0.6rem 1rem;font-family:var(--mono);font-size:0.65rem;color:rgba(255,140,66,0.8);margin-bottom:1.5rem;line-height:1.6;}
+
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr);}.row2,.row3{grid-template-columns:1fr;}}
+@media(max-width:700px){.kpi-row{grid-template-columns:1fr 1fr;}.controls-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <span class="brand">[TEAM BRAVO · ÆTHERIS] FinOps</span>
+    <span class="breadcrumb"><a href="file:///C:/Users/xP4R4/Desktop/Bravo%20Systems%20Thinking%20for%20AI%20Websites/Ver.%2005/bravo-agentic-governance-architecture/sector-financial.html">Financial Sector</a> / Cost Governance Dashboard</span>
+  </div>
+  <div class="top-bar-right">
+    <span class="live-badge">● LIVE DEMO</span>
+    <span class="ts" id="clock">12:08:21 AM</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-title">FinOps Cost Governance Dashboard</div>
+  <div class="page-sub">Real-Time AI Spend Attribution · Policy Gate Enforcement · Anomaly Detection · Ætheris Financial Pipeline Module</div>
+
+  <div class="disclaimer-bar">
+    ⚠ Demonstrator — all data is generated statically in JavaScript. Real deployments require live telemetry feeds, PostgreSQL integration, and institutional compliance review.
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi kpi-c">
+      <div class="kpi-label">Today's Token Spend</div>
+      <div class="kpi-val" id="kpiTodayTokens">80.00M</div>
+      <div class="kpi-delta pos" id="kpiTodayDelta">↓ 80% from caching</div>
+    </div>
+    <div class="kpi kpi-gold">
+      <div class="kpi-label">Today's Cost (USD)</div>
+      <div class="kpi-val" id="kpiTodayCost">$1.2K</div>
+      <div class="kpi-delta neg" id="kpiCostDelta">⚠ approaching limit</div>
+    </div>
+    <div class="kpi kpi-g">
+      <div class="kpi-label">Monthly Savings vs Baseline</div>
+      <div class="kpi-val up" id="kpiSavings">$278.8K</div>
+      <div class="kpi-delta pos">vs. naive retrieval</div>
+    </div>
+    <div class="kpi kpi-b">
+      <div class="kpi-label">Active Sessions</div>
+      <div class="kpi-val" id="kpiSessions">500</div>
+      <div class="kpi-delta" id="kpiSessionDelta">~50K total today</div>
+    </div>
+    <div class="kpi kpi-r">
+      <div class="kpi-label">Anomaly Alerts (24h)</div>
+      <div class="kpi-val down" id="kpiAlerts">6</div>
+      <div class="kpi-delta neg" id="kpiAlertDelta">▲ above baseline</div>
+    </div>
+    <div class="kpi kpi-o">
+      <div class="kpi-label">Budget Utilisation</div>
+      <div class="kpi-val down" id="kpiBudget">100.0%</div>
+      <div class="kpi-delta" id="kpiBudgetDelta">$1.2K of $500.00</div>
+    </div>
+  </div>
+
+  <!-- COST MODEL CONTROLS -->
+  <div class="panel" style="margin-bottom:1.5px;border-bottom:1px solid var(--border);">
+    <div class="panel-title">Cost Model Parameters — <span class="highlight">adjust to recompute all metrics</span></div>
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <div class="ctrl-label"><span>Cost / 1M Tokens (USD)</span><span id="cvCostPerM">$15.00</span></div>
+        <input type="range" id="cCostPerM" min="0.5" max="15" value="3" step="0.25" oninput="dashUpdate()">
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label"><span>Calls Per Day</span><span id="cvCalls">50.0K</span></div>
+        <input type="range" id="cCalls" min="100" max="50000" value="2500" step="100" oninput="dashUpdate()">
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label"><span>Avg Tokens / Request</span><span id="cvTokens">8.0K</span></div>
+        <input type="range" id="cTokens" min="500" max="8000" value="2840" step="100" oninput="dashUpdate()">
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label"><span>Cache Hit Rate</span><span id="cvCache">80%</span></div>
+        <input type="range" id="cCache" min="0" max="80" value="31" step="1" oninput="dashUpdate()">
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label"><span>Daily Budget (USD)</span><span id="cvBudget">$500.00</span></div>
+        <input type="range" id="cBudget" min="5" max="500" value="28" step="1" oninput="dashUpdate()">
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label"><span>Anomaly Threshold (×avg)</span><span id="cvAnom">6.00×</span></div>
+        <input type="range" id="cAnom" min="1.5" max="6" value="3" step="0.25" oninput="dashUpdate()">
+      </div>
+    </div>
+    <div class="formula-block">
+      <div class="f-line"><span class="sym">DailyCost</span> = (AvgTokens × Calls × CostPerM) / 1,000,000 × (1 − CacheHitRate)</div>
+      <div class="f-line"><span class="sym">AnomalyThreshold</span> = 7-day rolling average cost × multiplier</div>
+      <div class="f-line"><span class="sym">BudgetUtilisation</span> = DailyCost / DailyBudget × 100</div>
+      <div class="f-line"><span class="sym">MonthlySavings</span> = (BaselineMonthlyCost − OptimisedMonthlyCost) where Baseline uses K=10, chunk=1024, no cache, sys=600tk</div>
+    </div>
+  </div>
+
+  <!-- ROW: BURN CHART + ANOMALY FEED -->
+  <div class="row3">
+    <div class="panel">
+      <div class="panel-title">Daily Token Burn Rate — Rolling 30 Days <span class="highlight" id="burnHighlight">7-day avg: $1.2K</span></div>
+      <div class="chart-wrap"><canvas id="chartBurn" height="300" width="550"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Anomaly Alert Feed <span class="highlight" id="alertCount">4 active</span></div>
+      <div class="alert-feed" id="alertFeed">
+    <div class="alert-item al-ok">
+      <span class="al-time">09:42</span>
+      <span class="al-type">OK</span>
+      <span class="al-msg">Session SES-82787 — normal spend $0.0319</span>
+    </div>
+    <div class="alert-item al-ok">
+      <span class="al-time">10:18</span>
+      <span class="al-type">OK</span>
+      <span class="al-msg">Cache hit rate at 29% — within target range</span>
+    </div>
+    <div class="alert-item al-warn">
+      <span class="al-time">11:03</span>
+      <span class="al-type">WARN</span>
+      <span class="al-msg">Session SES-51390 — spend 1.7× rolling avg</span>
+    </div>
+    <div class="alert-item al-ok">
+      <span class="al-time">11:47</span>
+      <span class="al-type">OK</span>
+      <span class="al-msg">Daily budget utilisation: 73% — comfortable</span>
+    </div>
+    <div class="alert-item al-alert">
+      <span class="al-time">12:32</span>
+      <span class="al-type">ALERT</span>
+      <span class="al-msg">Compliance unit — token spike detected, 6.0× threshold approaching</span>
+    </div>
+    <div class="alert-item al-ok">
+      <span class="al-time">13:05</span>
+      <span class="al-type">OK</span>
+      <span class="al-msg">Model version lock confirmed — claude-sonnet-4-6</span>
+    </div>
+    <div class="alert-item al-warn">
+      <span class="al-time">13:44</span>
+      <span class="al-type">WARN</span>
+      <span class="al-msg">Session SES-99590 — 1.8× average, review recommended</span>
+    </div>
+    <div class="alert-item al-block">
+      <span class="al-time">14:20</span>
+      <span class="al-type">BLOCK</span>
+      <span class="al-msg">Session SES-93295 — 6.5× avg, BLOCKED per policy</span>
+    </div>
+    <div class="alert-item al-ok">
+      <span class="al-time">14:58</span>
+      <span class="al-type">OK</span>
+      <span class="al-msg">Anomaly resolved — session terminated cleanly</span>
+    </div>
+    <div class="alert-item al-ok">
+      <span class="al-time">15:31</span>
+      <span class="al-type">OK</span>
+      <span class="al-msg">FinOps report generated — regulatory cost centres updated</span>
+    </div></div>
+    </div>
+  </div>
+
+  <!-- ROW: SESSION TABLE + BUDGET GAUGE -->
+  <div class="row3">
+    <div class="panel">
+      <div class="panel-title">Session Cost Attribution — Last 20 Sessions</div>
+      <div style="overflow-x:auto;">
+        <table class="session-table">
+          <thead>
+            <tr>
+              <th>Session ID</th>
+              <th>Business Unit</th>
+              <th>Task Class</th>
+              <th>Tokens</th>
+              <th>Cost</th>
+              <th>vs Avg</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="sessionBody"><tr>
+      <td>SES-45695</td><td>Compliance Reporting</td><td>Analysis</td>
+      <td>2.2K tk</td><td>$0.0337</td>
+      <td style="color:#ff4f6b">+40.4%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-82764</td><td>Credit Risk Analytics</td><td>Analysis</td>
+      <td>2.0K tk</td><td>$0.0307</td>
+      <td style="color:#ff4f6b">+28.0%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-49703</td><td>Customer Analytics</td><td>Generation</td>
+      <td>1.0K tk</td><td>$0.0153</td>
+      <td style="color:#2dffb0">-36.1%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-47693</td><td>Regulatory Filings</td><td>Compliance</td>
+      <td>2.3K tk</td><td>$0.0347</td>
+      <td style="color:#ff4f6b">+44.6%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-11247</td><td>Customer Analytics</td><td>Generation</td>
+      <td>2.1K tk</td><td>$0.0312</td>
+      <td style="color:#ff4f6b">+30.1%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-97460</td><td>Customer Analytics</td><td>Analysis</td>
+      <td>2.8K tk</td><td>$0.0414</td>
+      <td style="color:#ff4f6b">+72.6%</td>
+      <td class="status-warn">WARN</td>
+    </tr><tr>
+      <td>SES-29082</td><td>Compliance Reporting</td><td>Analysis</td>
+      <td>2.2K tk</td><td>$0.0323</td>
+      <td style="color:#ff4f6b">+34.5%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-82021</td><td>Transaction Monitoring</td><td>Compliance</td>
+      <td>1.3K tk</td><td>$0.0190</td>
+      <td style="color:#2dffb0">-20.9%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-15703</td><td>Credit Risk Analytics</td><td>Generation</td>
+      <td>1.2K tk</td><td>$0.0176</td>
+      <td style="color:#2dffb0">-26.5%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-71771</td><td>Credit Risk Analytics</td><td>Retrieval</td>
+      <td>679 tk</td><td>$0.0102</td>
+      <td style="color:#2dffb0">-57.6%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-56338</td><td>Compliance Reporting</td><td>Retrieval</td>
+      <td>2.6K tk</td><td>$0.0395</td>
+      <td style="color:#ff4f6b">+64.6%</td>
+      <td class="status-warn">WARN</td>
+    </tr><tr>
+      <td>SES-22476</td><td>Customer Analytics</td><td>Retrieval</td>
+      <td>3.5K tk</td><td>$0.0524</td>
+      <td style="color:#ff4f6b">+118.1%</td>
+      <td class="status-alert">ALERT</td>
+    </tr><tr>
+      <td>SES-61171</td><td>Compliance Reporting</td><td>Generation</td>
+      <td>1.3K tk</td><td>$0.0191</td>
+      <td style="color:#2dffb0">-20.5%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-82355</td><td>Customer Analytics</td><td>Generation</td>
+      <td>1.6K tk</td><td>$0.0243</td>
+      <td style="color:#ff4f6b">+1.1%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-11152</td><td>Regulatory Filings</td><td>Analysis</td>
+      <td>791 tk</td><td>$0.0119</td>
+      <td style="color:#2dffb0">-50.6%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-63106</td><td>Customer Analytics</td><td>Analysis</td>
+      <td>3.2K tk</td><td>$0.0485</td>
+      <td style="color:#ff4f6b">+101.9%</td>
+      <td class="status-alert">ALERT</td>
+    </tr><tr>
+      <td>SES-17193</td><td>Credit Risk Analytics</td><td>Generation</td>
+      <td>2.0K tk</td><td>$0.0298</td>
+      <td style="color:#ff4f6b">+24.3%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-75658</td><td>Compliance Reporting</td><td>Generation</td>
+      <td>2.0K tk</td><td>$0.0302</td>
+      <td style="color:#ff4f6b">+25.8%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-77684</td><td>Credit Risk Analytics</td><td>Compliance</td>
+      <td>1.5K tk</td><td>$0.0220</td>
+      <td style="color:#2dffb0">-8.5%</td>
+      <td class="status-ok">OK</td>
+    </tr><tr>
+      <td>SES-39119</td><td>Customer Analytics</td><td>Generation</td>
+      <td>1.1K tk</td><td>$0.0158</td>
+      <td style="color:#2dffb0">-34.1%</td>
+      <td class="status-ok">OK</td>
+    </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Budget Gauge</div>
+      <div class="budget-gauge">
+        <div class="gauge-label">Daily Budget Utilisation</div>
+        <div class="gauge-val" id="gaugeVal" style="color: rgb(255, 79, 107);">100.0%</div>
+        <div class="gauge-sub" id="gaugeSub">of $500.00 daily limit</div>
+      </div>
+      <canvas id="chartGauge" height="180" width="741"></canvas>
+      <div style="margin-top:1rem;">
+        <div class="panel-title">Spend Authority Tiers</div>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;font-family:var(--mono);font-size:0.68rem;">
+          <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid var(--border);"><span style="color:var(--green);">T1 Auto-Approve</span><span style="color:var(--text2);">&lt; $50/day</span></div>
+          <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid var(--border);"><span style="color:var(--gold);">T2 Manager Review</span><span style="color:var(--text2);">$50–$500/day</span></div>
+          <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span style="color:var(--red);">T3 CFO Approval</span><span style="color:var(--text2);">&gt; $500/day</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW: PROVIDER COMPARISON + TASK CLASS -->
+  <div class="row2">
+    <div class="panel">
+      <div class="panel-title">Model Efficiency Comparison — Cost per 1K Output Tokens</div>
+      <div class="provider-row" id="providerRow">
+    <div class="prov-item">
+      <span class="prov-name">claude-3-5-sonnet</span>
+      <div class="prov-bar-wrap"><div class="prov-bar" style="width:52.2%;background:#2dffb0;"></div></div>
+      <span class="prov-val">$4.800/1K</span>
+    </div>
+    <div class="prov-item">
+      <span class="prov-name">claude-3-opus</span>
+      <div class="prov-bar-wrap"><div class="prov-bar" style="width:78.3%;background:#ff4f6b;"></div></div>
+      <span class="prov-val">$7.200/1K</span>
+    </div>
+    <div class="prov-item">
+      <span class="prov-name">gpt-4o</span>
+      <div class="prov-bar-wrap"><div class="prov-bar" style="width:60.9%;background:#f5c842;"></div></div>
+      <span class="prov-val">$5.600/1K</span>
+    </div>
+    <div class="prov-item">
+      <span class="prov-name">gpt-4-turbo</span>
+      <div class="prov-bar-wrap"><div class="prov-bar" style="width:100.0%;background:#ff4f6b;"></div></div>
+      <span class="prov-val">$9.200/1K</span>
+    </div>
+    <div class="prov-item">
+      <span class="prov-name">bedrock-claude</span>
+      <div class="prov-bar-wrap"><div class="prov-bar" style="width:55.4%;background:#f5c842;"></div></div>
+      <span class="prov-val">$5.100/1K</span>
+    </div>
+    <div class="prov-item">
+      <span class="prov-name">mistral-large</span>
+      <div class="prov-bar-wrap"><div class="prov-bar" style="width:30.4%;background:#2dffb0;"></div></div>
+      <span class="prov-val">$2.800/1K</span>
+    </div></div>
+      <div style="margin-top:1rem;">
+        <canvas id="chartProvider" height="210" width="550"></canvas>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Cost Attribution by Task Class</div>
+      <div class="task-class-grid" id="taskClassGrid">
+    <div class="tc-item">
+      <div class="tc-name">Analysis</div>
+      <div class="tc-cost">$13.7K</div>
+      <div class="tc-pct">38% of monthly spend</div>
+      <div class="tc-bar-wrap"><div class="tc-bar" style="width:38%;background:#4f7fff;"></div></div>
+    </div>
+    <div class="tc-item">
+      <div class="tc-name">Generation</div>
+      <div class="tc-cost">$9.7K</div>
+      <div class="tc-pct">27% of monthly spend</div>
+      <div class="tc-bar-wrap"><div class="tc-bar" style="width:27%;background:#2dffb0;"></div></div>
+    </div>
+    <div class="tc-item">
+      <div class="tc-name">Compliance</div>
+      <div class="tc-cost">$7.9K</div>
+      <div class="tc-pct">22% of monthly spend</div>
+      <div class="tc-bar-wrap"><div class="tc-bar" style="width:22%;background:#f5c842;"></div></div>
+    </div>
+    <div class="tc-item">
+      <div class="tc-name">Retrieval</div>
+      <div class="tc-cost">$4.7K</div>
+      <div class="tc-pct">13% of monthly spend</div>
+      <div class="tc-bar-wrap"><div class="tc-bar" style="width:13%;background:#7c4fff;"></div></div>
+    </div></div>
+      <div style="margin-top:1rem;"><canvas id="chartTaskClass" height="210" width="550"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ROW: 12-MONTH PROJECTION -->
+  <div class="panel" style="margin-bottom:1.5rem;">
+    <div class="panel-title">12-Month Cost Projection — Optimised vs. Baseline with Seasonality</div>
+    <canvas id="chart12mo" height="270" width="550"></canvas>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-top:1rem;">
+      <div style="background:var(--panel);border:1px solid var(--border);padding:0.75rem;text-align:center;">
+        <div style="font-family:var(--mono);font-size:0.58rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.3rem;">Proj. Annual Optimised</div>
+        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--green);" id="projOptimised">$432.0K</div>
+      </div>
+      <div style="background:var(--panel);border:1px solid var(--border);padding:0.75rem;text-align:center;">
+        <div style="font-family:var(--mono);font-size:0.58rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.3rem;">Proj. Annual Baseline</div>
+        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--red);" id="projBaseline">$3.78M</div>
+      </div>
+      <div style="background:var(--panel);border:1px solid var(--border);padding:0.75rem;text-align:center;">
+        <div style="font-family:var(--mono);font-size:0.58rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.3rem;">Annual Savings</div>
+        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--gold);" id="projSavings">$3.35M</div>
+      </div>
+      <div style="background:var(--panel);border:1px solid var(--border);padding:0.75rem;text-align:center;">
+        <div style="font-family:var(--mono);font-size:0.58rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.3rem;">Savings %</div>
+        <div style="font-family:var(--mono);font-size:1rem;font-weight:700;color:var(--cyan);" id="projPct">88.6%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUSINESS UNIT REPORT -->
+  <div class="panel" style="margin-bottom:1.5rem;">
+    <div class="panel-title">Business Unit FinOps Report — AI Expenditure Mapped to Regulatory Cost Centres</div>
+    <div style="overflow-x:auto;">
+      <table class="session-table">
+        <thead>
+          <tr><th>Business Unit</th><th>Regulatory Ref.</th><th>Daily Alloc.</th><th>Actual Spend</th><th>Variance</th><th>YTD Spend</th><th>Trend</th></tr>
+        </thead>
+        <tbody id="buReportBody"><tr>
+      <td style="color:var(--text)">Credit Risk Analytics</td>
+      <td style="color:var(--text3)">Basel III — Pillar 2</td>
+      <td>$8.00</td>
+      <td>$276.04</td>
+      <td style="color:#ff4f6b">+$268.04</td>
+      <td>$7.2K</td>
+      <td style="color:#ff4f6b">▲</td>
+    </tr><tr>
+      <td style="color:var(--text)">Compliance Reporting</td>
+      <td style="color:var(--text3)">MiFID II — Art. 16</td>
+      <td>$6.00</td>
+      <td>$234.03</td>
+      <td style="color:#ff4f6b">+$228.03</td>
+      <td>$6.1K</td>
+      <td style="color:#ff4f6b">▲</td>
+    </tr><tr>
+      <td style="color:var(--text)">Transaction Monitoring</td>
+      <td style="color:var(--text3)">FCA MAR — Art. 16</td>
+      <td>$9.00</td>
+      <td>$345.36</td>
+      <td style="color:#ff4f6b">+$336.36</td>
+      <td>$9.1K</td>
+      <td style="color:#ff4f6b">▲</td>
+    </tr><tr>
+      <td style="color:var(--text)">Regulatory Filings</td>
+      <td style="color:var(--text3)">SOX — Section 302</td>
+      <td>$5.00</td>
+      <td>$187.54</td>
+      <td style="color:#ff4f6b">+$182.54</td>
+      <td>$4.8K</td>
+      <td style="color:#ff4f6b">▲</td>
+    </tr><tr>
+      <td style="color:var(--text)">Customer Analytics</td>
+      <td style="color:var(--text3)">GDPR — Art. 22</td>
+      <td>$4.00</td>
+      <td>$139.56</td>
+      <td style="color:#ff4f6b">+$135.56</td>
+      <td>$3.5K</td>
+      <td style="color:#ff4f6b">▲</td>
+    </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const SEA = [1,0.92,1.05,1.12,1.08,0.96,1.18,1.25,1.1,1.04,1.2,1.28];
+const BUS = [
+  {name:'Credit Risk Analytics',  reg:'Basel III — Pillar 2', alloc:8,  color:'#4f7fff'},
+  {name:'Compliance Reporting',   reg:'MiFID II — Art. 16',  alloc:6,  color:'#2dffb0'},
+  {name:'Transaction Monitoring', reg:'FCA MAR — Art. 16',   alloc:9,  color:'#f5c842'},
+  {name:'Regulatory Filings',     reg:'SOX — Section 302',   alloc:5,  color:'#7c4fff'},
+  {name:'Customer Analytics',     reg:'GDPR — Art. 22',      alloc:4,  color:'#ff8c42'},
+];
+const TASK_CLASSES = [
+  {name:'Analysis',    pct:38, color:'#4f7fff'},
+  {name:'Generation',  pct:27, color:'#2dffb0'},
+  {name:'Compliance',  pct:22, color:'#f5c842'},
+  {name:'Retrieval',   pct:13, color:'#7c4fff'},
+];
+const PROVIDERS = [
+  {name:'claude-3-5-sonnet',  cost:0.0048},
+  {name:'claude-3-opus',      cost:0.0072},
+  {name:'gpt-4o',             cost:0.0056},
+  {name:'gpt-4-turbo',        cost:0.0092},
+  {name:'bedrock-claude',     cost:0.0051},
+  {name:'mistral-large',      cost:0.0028},
+];
+
+let sessions = [];
+function genSessions(avgTok, avgCost) {
+  const classes = ['Analysis','Generation','Compliance','Retrieval'];
+  const units = BUS.map(b=>b.name);
+  sessions = Array.from({length:20}, (_,i) => {
+    const mul = 0.4 + Math.random()*1.8;
+    const tok = Math.round(avgTok * mul);
+    const cost = tok * avgCost / 1e6;
+    const vsAvg = (mul - 1) * 100;
+    const status = mul > 3 ? 'BLOCK' : mul > 2 ? 'ALERT' : mul > 1.5 ? 'WARN' : 'OK';
+    return {
+      id: 'SES-' + (10000 + Math.floor(Math.random()*89999)),
+      unit: units[Math.floor(Math.random()*units.length)],
+      cls: classes[Math.floor(Math.random()*classes.length)],
+      tokens: tok, cost, vsAvg, status
+    };
+  });
+}
+
+function fmtM(n) {
+  if (n>=1e9) return (n/1e9).toFixed(2)+'B';
+  if (n>=1e6) return (n/1e6).toFixed(2)+'M';
+  if (n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toFixed(0);
+}
+function fmtUSD(n) {
+  if (n>=1e6) return '$'+(n/1e6).toFixed(2)+'M';
+  if (n>=1e3) return '$'+(n/1e3).toFixed(1)+'K';
+  return '$'+n.toFixed(2);
+}
+
+function dashUpdate() {
+  const cpm   = +$('cCostPerM').value;
+  const calls = +$('cCalls').value;
+  const tok   = +$('cTokens').value;
+  const cache = +$('cCache').value/100;
+  const budget= +$('cBudget').value;
+  const anom  = +$('cAnom').value;
+
+  $('cvCostPerM').textContent = '$'+cpm.toFixed(2);
+  $('cvCalls').textContent = fmtM(calls);
+  $('cvTokens').textContent = fmtM(tok);
+  $('cvCache').textContent = (cache*100).toFixed(0)+'%';
+  $('cvBudget').textContent = '$'+budget.toFixed(2);
+  $('cvAnom').textContent = anom.toFixed(2)+'×';
+
+  const effTok    = tok * (1-cache);
+  const dailyCost = effTok * calls * cpm / 1e6;
+  const monthCost = dailyCost * 30;
+  // Baseline: k=10, chunk=1024, overlap=256, sys=600, no cache, same calls
+  const baseTok   = (1024+256+12)*10 + 600 + 120 + 350;
+  const baseCost  = baseTok * calls * cpm / 1e6;
+  const baseMo    = baseCost * 30;
+  const savings   = Math.max(0, baseMo - monthCost);
+  const budgetPct = Math.min(100, dailyCost/budget*100);
+
+  // KPIs
+  $('kpiTodayTokens').textContent = fmtM(effTok*calls);
+  $('kpiTodayDelta').textContent = '↓ '+((1-effTok/tok)*100).toFixed(0)+'% from caching';
+  $('kpiTodayCost').textContent = fmtUSD(dailyCost);
+  $('kpiCostDelta').className = 'kpi-delta '+(dailyCost<budget*0.9?'pos':'neg');
+  $('kpiCostDelta').textContent = (dailyCost<budget*0.9?'✓ within budget':'⚠ approaching limit');
+  $('kpiSavings').textContent = fmtUSD(savings);
+  $('kpiSessions').textContent = Math.round(calls/100);
+  $('kpiSessionDelta').textContent = '~'+Math.round(calls/1000)+'K total today';
+  const anomCount = Math.round(Math.random()*3 + (dailyCost>budget*0.8?3:1));
+  $('kpiAlerts').textContent = anomCount;
+  $('kpiAlertDelta').textContent = anomCount > 2 ? '▲ above baseline' : '— within normal';
+  const bpct = budgetPct.toFixed(1)+'%';
+  $('kpiBudget').textContent = bpct;
+  $('kpiBudget').className = 'kpi-val '+(budgetPct>85?'down':budgetPct>65?'':'');
+  $('kpiBudgetDelta').textContent = fmtUSD(dailyCost)+' of '+fmtUSD(budget);
+
+  $('gaugeVal').textContent = budgetPct.toFixed(1)+'%';
+  $('gaugeVal').style.color = budgetPct>85?'#ff4f6b':budgetPct>65?'#f5c842':'#2dffb0';
+  $('gaugeSub').textContent = 'of '+fmtUSD(budget)+' daily limit';
+
+  genSessions(effTok, cpm);
+  renderSessionTable();
+  renderAlertFeed(effTok, anom);
+  renderProviderRow(cpm);
+  renderTaskClass(monthCost);
+  drawBurnChart(dailyCost, calls, cpm, cache, tok);
+  draw12moChart(monthCost, baseMo);
+  drawGaugeChart(budgetPct);
+  drawProviderChart(cpm);
+  drawTaskClassChart(monthCost);
+  renderBUReport(budget, dailyCost, calls, cpm, tok, cache);
+
+  // Projection summary
+  const ann = monthCost*12;
+  const annBase = baseMo*12;
+  $('projOptimised').textContent = fmtUSD(ann);
+  $('projBaseline').textContent = fmtUSD(annBase);
+  $('projSavings').textContent = fmtUSD(Math.max(0,annBase-ann));
+  $('projPct').textContent = (Math.max(0,(annBase-ann)/annBase)*100).toFixed(1)+'%';
+  $('burnHighlight').textContent = '7-day avg: '+fmtUSD(dailyCost);
+}
+
+function renderSessionTable() {
+  const tb = $('sessionBody');
+  tb.innerHTML = '';
+  sessions.forEach(s => {
+    const cl = s.status==='OK'?'status-ok':s.status==='WARN'?'status-warn':s.status==='ALERT'?'status-alert':'status-block';
+    tb.innerHTML += `<tr>
+      <td>${s.id}</td><td>${s.unit}</td><td>${s.cls}</td>
+      <td>${fmtM(s.tokens)} tk</td><td>$${s.cost.toFixed(4)}</td>
+      <td style="color:${s.vsAvg>0?'#ff4f6b':'#2dffb0'}">${s.vsAvg>0?'+':''}${s.vsAvg.toFixed(1)}%</td>
+      <td class="${cl}">${s.status}</td>
+    </tr>`;
+  });
+}
+
+function renderAlertFeed(effTok, anom) {
+  const times = ['09:42','10:18','11:03','11:47','12:32','13:05','13:44','14:20','14:58','15:31'];
+  const feed = $('alertFeed');
+  const msgs = [
+    {type:'OK',   msg:'Session SES-'+Math.floor(10000+Math.random()*89999)+' — normal spend $'+( Math.random()*0.05).toFixed(4),    cl:'al-ok'},
+    {type:'OK',   msg:'Cache hit rate at '+(28+Math.floor(Math.random()*8))+'% — within target range',                              cl:'al-ok'},
+    {type:'WARN', msg:'Session SES-'+Math.floor(10000+Math.random()*89999)+' — spend '+(1.6+Math.random()*0.4).toFixed(1)+'× rolling avg',cl:'al-warn'},
+    {type:'OK',   msg:'Daily budget utilisation: '+(55+Math.floor(Math.random()*20))+'% — comfortable',                              cl:'al-ok'},
+    {type:'ALERT',msg:'Compliance unit — token spike detected, '+anom.toFixed(1)+'× threshold approaching',                          cl:'al-alert'},
+    {type:'OK',   msg:'Model version lock confirmed — claude-sonnet-4-6',                                                            cl:'al-ok'},
+    {type:'WARN', msg:'Session SES-'+Math.floor(10000+Math.random()*89999)+' — 1.8× average, review recommended',                   cl:'al-warn'},
+    {type:'BLOCK',msg:'Session SES-'+Math.floor(10000+Math.random()*89999)+' — '+(anom+0.5).toFixed(1)+'× avg, BLOCKED per policy', cl:'al-block'},
+    {type:'OK',   msg:'Anomaly resolved — session terminated cleanly',                                                               cl:'al-ok'},
+    {type:'OK',   msg:'FinOps report generated — regulatory cost centres updated',                                                   cl:'al-ok'},
+  ];
+  $('alertCount').textContent = msgs.filter(m=>m.type!=='OK').length+' active';
+  feed.innerHTML = msgs.map((m,i)=>`
+    <div class="alert-item ${m.cl}">
+      <span class="al-time">${times[i]}</span>
+      <span class="al-type">${m.type}</span>
+      <span class="al-msg">${m.msg}</span>
+    </div>`).join('');
+}
+
+function renderProviderRow(cpm) {
+  const maxC = Math.max(...PROVIDERS.map(p=>p.cost));
+  $('providerRow').innerHTML = PROVIDERS.map(p=>`
+    <div class="prov-item">
+      <span class="prov-name">${p.name}</span>
+      <div class="prov-bar-wrap"><div class="prov-bar" style="width:${(p.cost/maxC*100).toFixed(1)}%;background:${p.cost<0.005?'#2dffb0':p.cost<0.007?'#f5c842':'#ff4f6b'};"></div></div>
+      <span class="prov-val">$${(p.cost*1000).toFixed(3)}/1K</span>
+    </div>`).join('');
+}
+
+function renderTaskClass(monthCost) {
+  $('taskClassGrid').innerHTML = TASK_CLASSES.map(t=>`
+    <div class="tc-item">
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-cost">${fmtUSD(monthCost*t.pct/100)}</div>
+      <div class="tc-pct">${t.pct}% of monthly spend</div>
+      <div class="tc-bar-wrap"><div class="tc-bar" style="width:${t.pct}%;background:${t.color};"></div></div>
+    </div>`).join('');
+}
+
+function renderBUReport(budget, dailyCost, calls, cpm, tok, cache) {
+  const tb = $('buReportBody');
+  const total = BUS.reduce((s,b)=>s+b.alloc,0);
+  tb.innerHTML = BUS.map(bu => {
+    const frac = bu.alloc/total;
+    const spend = dailyCost*frac*(0.85+Math.random()*0.3);
+    const variance = spend - bu.alloc;
+    const ytd = spend*26*(0.95+Math.random()*0.1);
+    const trend = variance > 0 ? '▲' : '▼';
+    const trendCol = variance > 0 ? '#ff4f6b' : '#2dffb0';
+    return `<tr>
+      <td style="color:var(--text)">${bu.name}</td>
+      <td style="color:var(--text3)">${bu.reg}</td>
+      <td>${fmtUSD(bu.alloc)}</td>
+      <td>${fmtUSD(spend)}</td>
+      <td style="color:${variance>0?'#ff4f6b':'#2dffb0'}">${variance>0?'+':''}${fmtUSD(variance)}</td>
+      <td>${fmtUSD(ytd)}</td>
+      <td style="color:${trendCol}">${trend}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── CHARTS ── */
+function drawBurnChart(dailyCost, calls, cpm, cache, tok) {
+  const c = $('chartBurn'); if(!c) return;
+  const ctx = c.getContext('2d');
+  const W=c.offsetWidth; const H=200;
+  c.width=W*devicePixelRatio; c.height=H*devicePixelRatio;
+  ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,W,H);
+  const pad={t:14,r:12,b:28,l:52};
+  const iw=W-pad.l-pad.r; const ih=H-pad.t-pad.b;
+  const sea30=[1,0.93,1.02,1.08,1.06,0.94,1.15,1.22,1.07,1.02,1.18,1.25,
+               1.1,0.97,1.04,1.09,1.07,0.98,1.13,1.2,1.08,1.03,1.16,1.23,
+               1.09,0.95,1.05,1.1,1.08,1.0];
+  const pts=sea30.map(s=>dailyCost*s*(0.96+Math.random()*0.08));
+  const maxV=Math.max(...pts)*1.15; const minV=0;
+  function toX(i){return pad.l+(i/29)*iw;}
+  function toY(v){return pad.t+ih*(1-v/maxV);}
+  // grid
+  ctx.strokeStyle='#2a2d3e'; ctx.lineWidth=0.5;
+  for(let i=0;i<=4;i++){const y=pad.t+ih*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();ctx.fillStyle='#5a6080';ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='right';ctx.fillText('$'+((maxV*i/4).toFixed(1)),pad.l-4,y+3);}
+  // area
+  ctx.beginPath();
+  pts.forEach((v,i)=>{const x=toX(i);const y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.lineTo(W-pad.r,pad.t+ih); ctx.lineTo(pad.l,pad.t+ih); ctx.closePath();
+  const grd=ctx.createLinearGradient(0,pad.t,0,pad.t+ih);
+  grd.addColorStop(0,'rgba(79,127,255,0.3)'); grd.addColorStop(1,'rgba(79,127,255,0)');
+  ctx.fillStyle=grd; ctx.fill();
+  // line
+  ctx.beginPath();
+  pts.forEach((v,i)=>{const x=toX(i);const y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle='#4f7fff'; ctx.lineWidth=2; ctx.stroke();
+  // anomaly dots
+  pts.forEach((v,i)=>{if(v>dailyCost*2.8){ctx.beginPath();ctx.arc(toX(i),toY(v),5,0,Math.PI*2);ctx.fillStyle='#ff4f6b';ctx.fill();}});
+  // day labels
+  ctx.fillStyle='#5a6080'; ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='center';
+  [0,6,13,20,29].forEach(i=>ctx.fillText('D'+(i+1),toX(i),H-pad.b+12));
+}
+
+function draw12moChart(monthCost, baseCost) {
+  const c=$('chart12mo'); if(!c) return;
+  const ctx=c.getContext('2d');
+  const W=c.offsetWidth; const H=180;
+  c.width=W*devicePixelRatio; c.height=H*devicePixelRatio;
+  ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,W,H);
+  const pad={t:14,r:12,b:28,l:56};
+  const iw=W-pad.l-pad.r; const ih=H-pad.t-pad.b;
+  const optPts=SEA.map(s=>monthCost*s*(0.97+Math.random()*0.06));
+  const basePts=SEA.map(s=>baseCost*s*(0.97+Math.random()*0.06));
+  const maxV=Math.max(...basePts)*1.1;
+  function toX(i){return pad.l+(i/11)*iw;}
+  function toY(v){return pad.t+ih*(1-v/maxV);}
+  ctx.strokeStyle='#2a2d3e'; ctx.lineWidth=0.5;
+  for(let i=0;i<=4;i++){const y=pad.t+ih*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();ctx.fillStyle='#5a6080';ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='right';ctx.fillText(fmtUSD(maxV*i/4),pad.l-4,y+3);}
+  function drawLine(pts,col){ctx.beginPath();pts.forEach((v,i)=>{i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v));});ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();pts.forEach((v,i)=>{ctx.beginPath();ctx.arc(toX(i),toY(v),3,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();});}
+  drawLine(basePts,'#ff4f6b'); drawLine(optPts,'#2dffb0');
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  ctx.fillStyle='#5a6080'; ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='center';
+  months.forEach((m,i)=>ctx.fillText(m,toX(i),H-pad.b+13));
+  ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillStyle='#2dffb0'; ctx.fillText('■ Optimised',pad.l+2,pad.t+12);
+  ctx.fillStyle='#ff4f6b'; ctx.fillText('■ Baseline',pad.l+75,pad.t+12);
+}
+
+function drawGaugeChart(pct) {
+  const c=$('chartGauge'); if(!c) return;
+  const ctx=c.getContext('2d');
+  const W=c.offsetWidth; const H=120;
+  c.width=W*devicePixelRatio; c.height=H*devicePixelRatio;
+  ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2; const cy=H*0.9; const r=Math.min(W,H*1.8)*0.42;
+  const startA=Math.PI; const endA=0;
+  // track
+  ctx.beginPath(); ctx.arc(cx,cy,r,startA,endA,false);
+  ctx.strokeStyle='#2a2d3e'; ctx.lineWidth=16; ctx.stroke();
+  // fill
+  const fillA=startA+(endA-startA)*(pct/100)*(-1)*(-1);
+  const col=pct>85?'#ff4f6b':pct>65?'#f5c842':'#2dffb0';
+  const grd=ctx.createLinearGradient(cx-r,0,cx+r,0);
+  grd.addColorStop(0,col+'88'); grd.addColorStop(1,col);
+  ctx.beginPath(); ctx.arc(cx,cy,r,startA,startA+(Math.PI*pct/100),false);
+  ctx.strokeStyle=grd; ctx.lineWidth=16; ctx.stroke();
+  // tick labels
+  ctx.fillStyle='#5a6080'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('0%',cx-r-8,cy+6); ctx.fillText('100%',cx+r+14,cy+6); ctx.fillText('50%',cx,cy-r-8);
+}
+
+function drawProviderChart(cpm) {
+  const c=$('chartProvider'); if(!c) return;
+  const ctx=c.getContext('2d');
+  const W=c.offsetWidth; const H=140;
+  c.width=W*devicePixelRatio; c.height=H*devicePixelRatio;
+  ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,W,H);
+  const pad={t:10,r:10,b:28,l:10};
+  const iw=W-pad.l-pad.r; const ih=H-pad.t-pad.b;
+  const maxC=Math.max(...PROVIDERS.map(p=>p.cost))*1.2;
+  const bw=iw/PROVIDERS.length;
+  PROVIDERS.forEach((p,i)=>{
+    const bh=(p.cost/maxC)*ih;
+    const x=pad.l+i*bw+bw*0.15; const y=pad.t+ih-bh;
+    const col=p.cost<0.005?'#2dffb0':p.cost<0.007?'#f5c842':'#ff4f6b';
+    const grd=ctx.createLinearGradient(0,y,0,pad.t+ih);
+    grd.addColorStop(0,col); grd.addColorStop(1,col+'22');
+    ctx.fillStyle=grd; ctx.fillRect(x,y,bw*0.7,bh);
+    ctx.fillStyle='#5a6080'; ctx.font='7px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(p.name.split('-').slice(-1)[0],x+bw*0.35,H-pad.b+11);
+    ctx.fillStyle=col; ctx.font='8px JetBrains Mono,monospace';
+    ctx.fillText('$'+(p.cost*1000).toFixed(2),x+bw*0.35,y-4);
+  });
+}
+
+function drawTaskClassChart(monthCost) {
+  const c=$('chartTaskClass'); if(!c) return;
+  const ctx=c.getContext('2d');
+  const W=c.offsetWidth; const H=140;
+  c.width=W*devicePixelRatio; c.height=H*devicePixelRatio;
+  ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2; const cy=H/2; const r=Math.min(W,H)*0.38;
+  let startA=-Math.PI/2;
+  TASK_CLASSES.forEach(t=>{
+    const arc=Math.PI*2*t.pct/100;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,startA,startA+arc,false);
+    ctx.fillStyle=t.color+'bb'; ctx.fill();
+    ctx.strokeStyle=var_bg; ctx.lineWidth=2; ctx.stroke();
+    // label
+    const midA=startA+arc/2;
+    const lx=cx+Math.cos(midA)*(r*0.65); const ly=cy+Math.sin(midA)*(r*0.65);
+    ctx.fillStyle='#e8eaf2'; ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(t.pct+'%',lx,ly+3);
+    startA+=arc;
+  });
+  // legend
+  let lx=4;
+  TASK_CLASSES.forEach(t=>{
+    ctx.fillStyle=t.color; ctx.fillRect(lx,H-14,8,8);
+    ctx.fillStyle='#9ba3c4'; ctx.font='7px JetBrains Mono,monospace'; ctx.textAlign='left';
+    ctx.fillText(t.name,lx+11,H-7);
+    lx+=t.name.length*4.5+18;
+  });
+}
+
+const var_bg='#0a0b0e';
+
+// Clock
+function tick(){$('clock').textContent=new Date().toLocaleTimeString();}
+setInterval(tick,1000); tick();
+
+// Init + resize
+dashUpdate();
+window.addEventListener('resize',dashUpdate);
+</script>
+
+
+</body></html>

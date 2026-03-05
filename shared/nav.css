@@ -1,0 +1,135 @@
+/* =============================================
+   TEAM BRAVO — Top Navigation Bar
+   ============================================= */
+
+.site-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 64px;
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.nav-inner {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* Brand */
+.nav-brand {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #f1f5f9;
+  text-decoration: none;
+  text-transform: uppercase;
+  padding-right: 28px;
+  border-right: 1px solid #2d3f55;
+  margin-right: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nav-brand:hover { color: #ffffff; }
+
+/* Tabs container */
+.nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+
+/* Individual tab */
+.nav-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 13px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  text-decoration: none;
+  border-radius: 7px;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.nav-tab:hover { color: #f1f5f9; background: #1e293b; }
+.nav-tab.active {
+  color: #ffffff;
+  background: #1e293b;
+  font-weight: 600;
+}
+
+/* Colored active underline per week */
+.nav-tab.active[data-week="1"] { box-shadow: inset 0 -2px 0 #6366f1; }
+.nav-tab.active[data-week="2"] { box-shadow: inset 0 -2px 0 #0ea5e9; }
+.nav-tab.active[data-week="3"] { box-shadow: inset 0 -2px 0 #10b981; }
+.nav-tab.active[data-week="4"] { box-shadow: inset 0 -2px 0 #f59e0b; }
+.nav-tab.active[data-week="5"] { box-shadow: inset 0 -2px 0 #ec4899; }
+.nav-tab.active[data-week="6"] { box-shadow: inset 0 -2px 0 #ef4444; }
+.nav-tab.active[data-week="home"] { box-shadow: inset 0 -2px 0 #4f46e5; }
+
+/* Dropdown wrapper */
+.nav-dropdown {
+  position: relative;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.dropdown-toggle { cursor: pointer; }
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  min-width: 180px;
+  padding: 6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 100;
+}
+.nav-dropdown:hover .dropdown-menu,
+.nav-dropdown:focus-within .dropdown-menu { display: block; }
+
+.dropdown-menu a {
+  display: block;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: #94a3b8;
+  text-decoration: none;
+  border-radius: 7px;
+  transition: color 0.12s, background 0.12s;
+}
+.dropdown-menu a:hover { color: #f1f5f9; background: #1e293b; }
+.dropdown-menu .arch-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #475569;
+  padding: 8px 14px 4px;
+  display: block;
+}
+
+/* --- Responsive: hide some tabs on small screens --- */
+@media (max-width: 700px) {
+  .nav-brand { padding-right: 16px; margin-right: 8px; letter-spacing: 1px; }
+  .nav-tab { padding: 6px 9px; font-size: 12px; }
+}

@@ -1,0 +1,265 @@
+/* =============================================
+   TEAM BRAVO — AI for Systems Thinking
+   Base Styles
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* --- Reset & Root --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --color-bg:       #f8fafc;
+  --color-surface:  #ffffff;
+  --color-border:   #e2e8f0;
+  --color-text:     #1e293b;
+  --color-muted:    #64748b;
+  --color-faint:    #94a3b8;
+
+  /* Week accent colors */
+  --w1: #6366f1;  --w1-light: #eef2ff;
+  --w2: #0ea5e9;  --w2-light: #f0f9ff;
+  --w3: #10b981;  --w3-light: #f0fdf4;
+  --w4: #f59e0b;  --w4-light: #fffbeb;
+  --w5: #ec4899;  --w5-light: #fdf4ff;
+  --w6: #ef4444;  --w6-light: #fff1f2;
+
+  /* Media type colors */
+  --video:       #6366f1;
+  --audio:       #0ea5e9;
+  --infographic: #10b981;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  padding-top: 64px; /* offset for fixed nav */
+}
+
+/* --- Page wrapper --- */
+.page-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* --- Typography --- */
+h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p  { color: var(--color-muted); font-size: 0.95rem; }
+
+/* --- Section header --- */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-faint);
+  margin-bottom: 6px;
+}
+
+/* --- Cards grid --- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 22px 18px;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: box-shadow 0.18s, transform 0.18s;
+  display: block;
+}
+.card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+.card .card-week-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: white;
+  font-weight: 800;
+}
+.card .card-week-badge .wk-label { font-size: 9px; opacity: 0.85; letter-spacing: 1px; }
+.card .card-week-badge .wk-num   { font-size: 20px; line-height: 1; }
+.card h3 { margin-bottom: 4px; }
+.card .card-owner { font-size: 12px; color: var(--color-faint); font-weight: 500; }
+.card .card-theme { font-size: 13px; color: var(--color-muted); margin-top: 6px; }
+
+/* --- Hero banner (home) --- */
+.hero {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%);
+  border-radius: 18px;
+  padding: 40px 36px;
+  color: white;
+  margin-bottom: 40px;
+}
+.hero .hero-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 10px;
+}
+.hero h1 { color: white; margin-bottom: 8px; }
+.hero p { color: rgba(255,255,255,0.75); font-size: 1rem; margin-bottom: 28px; }
+.hero-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+.hero-stat {
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 10px 18px;
+  text-align: center;
+}
+.hero-stat .stat-val   { font-size: 22px; font-weight: 800; }
+.hero-stat .stat-label { font-size: 11px; opacity: 0.7; font-weight: 500; }
+
+/* --- Week page header --- */
+.week-header {
+  border-radius: 14px;
+  padding: 30px 28px;
+  margin-bottom: 28px;
+  color: white;
+}
+.week-header .week-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; margin-bottom: 6px; }
+.week-header h1 { font-size: 1.6rem; color: white; margin-bottom: 4px; }
+.week-header .week-owner { font-size: 14px; opacity: 0.8; font-weight: 500; }
+
+/* --- Accordion --- */
+.accordion { display: flex; flex-direction: column; gap: 10px; }
+
+.lesson-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.18s, border-color 0.18s;
+}
+.lesson-card.open { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+
+.lesson-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  text-align: left;
+}
+.lesson-btn:hover { background: #fafbfc; }
+
+.lesson-id-badge {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  margin-top: 2px;
+}
+.lesson-text { flex: 1; }
+.lesson-title    { font-size: 14px; font-weight: 700; color: var(--color-text); margin-bottom: 3px; }
+.lesson-obj      { font-size: 12px; color: var(--color-muted); }
+.lesson-icons    { display: flex; gap: 6px; flex-shrink: 0; margin-top: 2px; }
+.lesson-chevron  { flex-shrink: 0; font-size: 18px; color: var(--color-faint); transition: transform 0.2s; margin-top: 2px; }
+.lesson-card.open .lesson-chevron { transform: rotate(180deg); }
+
+.lesson-cublets  { padding: 0 18px 18px; display: none; }
+.lesson-card.open .lesson-cublets { display: block; }
+
+.cublets-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-top: 2px; }
+
+.cublet-row {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.cublet-row:last-child { margin-bottom: 0; }
+.cublet-icon { flex-shrink: 0; margin-top: 1px; font-size: 16px; }
+.cublet-type { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--color-faint); }
+.cublet-desc { font-size: 13px; color: #374151; }
+
+/* --- Media type icons/colors --- */
+.icon-video       { color: var(--video); }
+.icon-audio       { color: var(--audio); }
+.icon-infographic { color: var(--infographic); }
+
+/* --- Legend --- */
+.media-legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+.media-legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-muted); font-weight: 500; }
+
+/* --- Team member notes section --- */
+.member-notes {
+  margin-top: 40px;
+  padding: 28px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+.member-notes h2 { margin-bottom: 12px; }
+.notes-placeholder {
+  font-size: 14px;
+  color: var(--color-faint);
+  font-style: italic;
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* --- Archive section --- */
+.archive-links { margin-top: 48px; }
+.archive-cards { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+.archive-card {
+  display: block;
+  padding: 18px 22px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+.archive-card:hover { background: #f1f5f9; }
+.archive-card .arch-label { font-size: 11px; color: var(--color-faint); font-weight: 500; margin-bottom: 3px; }
+
+/* --- Footer --- */
+.site-footer {
+  text-align: center;
+  margin-top: 60px;
+  padding: 24px;
+  font-size: 12px;
+  color: var(--color-faint);
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .hero { padding: 28px 20px; }
+  .page-wrap { padding: 28px 16px 60px; }
+  .cards-grid { grid-template-columns: 1fr 1fr; }
+}

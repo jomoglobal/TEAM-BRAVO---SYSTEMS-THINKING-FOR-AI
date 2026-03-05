@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<!-- saved from url=(0157)file:///C:/Users/xP4R4/Desktop/Bravo%20Systems%20Thinking%20for%20AI%20Websites/Ver.%2005/bravo-agentic-governance-architecture/risk-compliance-analyzer.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Regulatory Risk Compliance Analyzer — Ætheris AWCMP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap');
+:root {
+  --bg:#0a0b0e; --bg2:#0e1014; --surface:#12141a; --surface2:#171921;
+  --panel:#1c1f28; --panel2:#222533; --border:#2a2d3e; --border2:#363a52;
+  --glow:#4f7fff; --cyan:#00d4ff; --gold:#f5c842; --green:#2dffb0;
+  --red:#ff4f6b; --orange:#ff8c42; --purple:#7c4fff;
+  --text:#e8eaf2; --text2:#9ba3c4; --text3:#5a6080;
+  --mono:'JetBrains Mono',monospace; --display:'Syne',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--display);font-size:14px;line-height:1.6;min-height:100vh;
+  background-image:linear-gradient(rgba(79,127,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(79,127,255,0.02) 1px,transparent 1px);
+  background-size:40px 40px;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:var(--border2);}
+
+.top-bar{background:rgba(10,11,14,0.97);border-bottom:1px solid var(--border);padding:0.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.brand{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--red);}
+.breadcrumb{font-family:var(--mono);font-size:0.62rem;color:var(--text3);}
+.breadcrumb a{color:var(--text3);text-decoration:none;} .breadcrumb a:hover{color:var(--text2);}
+.main{max-width:1380px;margin:0 auto;padding:1.5rem;}
+.page-title{font-size:1.6rem;font-weight:800;margin-bottom:0.25rem;}
+.page-sub{font-family:var(--mono);font-size:0.7rem;color:var(--text3);margin-bottom:1.5rem;}
+
+.disclaimer{background:rgba(255,79,107,0.05);border:1px solid rgba(255,79,107,0.2);padding:0.65rem 1rem;font-family:var(--mono);font-size:0.65rem;color:rgba(255,79,107,0.8);margin-bottom:1.5rem;line-height:1.6;}
+
+/* POSTURE SCORE */
+.posture-bar{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);margin-bottom:1.5rem;}
+.posture-card{background:var(--surface);padding:1rem;text-align:center;position:relative;overflow:hidden;cursor:pointer;transition:background 0.15s;}
+.posture-card:hover{background:var(--panel);}
+.posture-card.active{background:var(--panel2);}
+.posture-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.p-mifid::before{background:#4f7fff;}
+.p-sox::before{background:#f5c842;}
+.p-basel::before{background:#2dffb0;}
+.p-dora::before{background:#ff8c42;}
+.p-fca::before{background:#7c4fff;}
+.p-euai::before{background:#ff4f6b;}
+.p-gdpr::before{background:#00d4ff;}
+.posture-reg{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:0.4rem;}
+.posture-score{font-family:var(--mono);font-size:1.5rem;font-weight:700;}
+.posture-label{font-family:var(--mono);font-size:0.58rem;color:var(--text3);margin-top:0.15rem;}
+
+/* TABS */
+.reg-tabs{display:flex;gap:1px;background:var(--border);overflow-x:auto;margin-bottom:1.5rem;}
+.reg-tab{flex-shrink:0;background:var(--surface);border:none;cursor:pointer;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);padding:0.7rem 1rem;transition:all 0.2s;border-bottom:2px solid transparent;}
+.reg-tab:hover{background:var(--panel);color:var(--text2);}
+.reg-tab.active{background:var(--panel2);color:var(--text);border-bottom-color:var(--glow);}
+
+/* MAIN LAYOUT */
+.analyzer-layout{display:grid;grid-template-columns:1fr 380px;gap:1px;background:var(--border);margin-bottom:1.5rem;}
+.panel{background:var(--surface);padding:1.25rem;}
+.panel-title{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem;}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:4px;}
+.check-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.65rem 0.75rem;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;border-radius:2px;}
+.check-item:hover{background:var(--panel);}
+.check-item.checked{background:rgba(45,255,176,0.04);border-color:rgba(45,255,176,0.2);}
+.check-item.gap{background:rgba(255,79,107,0.04);border-color:rgba(255,79,107,0.15);}
+.checkbox{width:16px;height:16px;border:1px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;background:var(--bg2);}
+.check-item.checked .checkbox{background:var(--green);border-color:var(--green);}
+.check-item.checked .checkbox::after{content:'✓';font-size:10px;color:#0a0b0e;font-weight:700;}
+.check-text{font-size:0.8rem;color:var(--text2);flex:1;line-height:1.55;}
+.check-item.checked .check-text{color:var(--text3);}
+.check-reg{font-family:var(--mono);font-size:0.58rem;color:var(--text3);flex-shrink:0;padding:0.1rem 0.4rem;border:1px solid var(--border);background:var(--bg2);}
+.section-divider{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);padding:0.5rem 0;margin-top:0.5rem;border-bottom:1px solid var(--border);}
+
+/* RIGHT PANEL */
+.score-display{text-align:center;padding:1.25rem 0;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.score-big{font-family:var(--mono);font-size:3rem;font-weight:700;line-height:1;}
+.score-label{font-family:var(--mono);font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.3rem;}
+.score-bar-wrap{height:6px;background:var(--border2);border-radius:3px;margin:0.75rem 0;}
+.score-bar{height:100%;border-radius:3px;transition:width 0.5s;}
+.score-status{font-family:var(--mono);font-size:0.68rem;padding:0.4rem 0.75rem;text-align:center;border:1px solid;margin-bottom:1rem;}
+
+/* GAP ANALYSIS */
+.gap-list{display:flex;flex-direction:column;gap:0.4rem;max-height:260px;overflow-y:auto;}
+.gap-item{border-left:2px solid;padding:0.5rem 0.75rem;font-size:0.75rem;}
+.gap-critical{border-color:var(--red);background:rgba(255,79,107,0.05);}
+.gap-high{border-color:var(--orange);background:rgba(255,140,66,0.04);}
+.gap-medium{border-color:var(--gold);background:rgba(245,200,66,0.04);}
+.gap-title{color:var(--text);font-weight:600;margin-bottom:0.2rem;font-size:0.78rem;}
+.gap-desc{color:var(--text3);font-size:0.72rem;line-height:1.5;}
+
+/* HEAT MAP */
+.heat-grid{display:grid;gap:2px;margin-bottom:1rem;}
+.heat-row{display:grid;gap:2px;}
+.heat-cell{padding:0.35rem 0.4rem;font-family:var(--mono);font-size:0.6rem;text-align:center;border-radius:2px;}
+.heat-header{font-family:var(--mono);font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.h-none{background:rgba(255,79,107,0.12);color:var(--red);}
+.h-partial{background:rgba(245,200,66,0.12);color:var(--gold);}
+.h-full{background:rgba(45,255,176,0.1);color:var(--green);}
+.h-na{background:var(--panel);color:var(--text3);}
+
+/* AUDIT TABLE */
+.audit-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.68rem;}
+.audit-table th{color:var(--text3);font-weight:500;padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.06em;}
+.audit-table td{padding:0.4rem 0.6rem;border-bottom:1px solid var(--border);color:var(--text2);line-height:1.5;}
+
+/* POLICY GATE SPEC */
+.gate-list{display:flex;flex-direction:column;gap:0.5rem;}
+.gate-item{background:var(--panel);border:1px solid var(--border);border-left:2px solid;padding:0.85rem 1rem;}
+.gate-trigger{font-family:var(--mono);font-size:0.65rem;color:var(--cyan);margin-bottom:0.3rem;}
+.gate-action{font-size:0.78rem;color:var(--text2);line-height:1.55;}
+.gate-ref{font-family:var(--mono);font-size:0.58rem;color:var(--text3);margin-top:0.25rem;}
+
+@media(max-width:1050px){.analyzer-layout{grid-template-columns:1fr;}.posture-bar{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:700px){.posture-bar{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <span class="brand">[Team Bravo  ·  Ætheris] COMPLIANCE</span>
+    <span class="breadcrumb"><a href="file:///C:/Users/xP4R4/Desktop/Bravo%20Systems%20Thinking%20for%20AI%20Websites/Ver.%2005/bravo-agentic-governance-architecture/sector-financial.html">Financial Sector</a> / Regulatory Risk Analyzer</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-title">Regulatory Risk Compliance Analyzer</div>
+  <div class="page-sub">AI Governance Readiness Assessment · MiFID II · SOX · Basel III · DORA · FCA AI Rules · EU AI Act · GDPR Art.22</div>
+
+  <div class="disclaimer">
+    ⚠ Demonstrator — this tool generates illustrative compliance posture scores based on selected checkboxes. Real compliance assessments require qualified legal and regulatory counsel, full system documentation, and formal audit procedures. No output constitutes legal advice.
+  </div>
+
+  <!-- POSTURE SCORES BAR -->
+  <div class="posture-bar" id="postureBar">
+    <div class="posture-card p-mifid active" onclick="switchReg(&#39;mifid&#39;,this)">
+      <div class="posture-reg">MiFID II</div>
+      <div class="posture-score" id="ps-mifid" style="color: var(--red);">0%</div>
+      <div class="posture-label">Readiness</div>
+    </div>
+    <div class="posture-card p-sox" onclick="switchReg(&#39;sox&#39;,this)">
+      <div class="posture-reg">SOX</div>
+      <div class="posture-score" id="ps-sox" style="color: var(--red);">30%</div>
+      <div class="posture-label">Readiness</div>
+    </div>
+    <div class="posture-card p-basel" onclick="switchReg(&#39;basel&#39;,this)">
+      <div class="posture-reg">Basel III</div>
+      <div class="posture-score" id="ps-basel" style="color: var(--red);">30%</div>
+      <div class="posture-label">Readiness</div>
+    </div>
+    <div class="posture-card p-dora" onclick="switchReg(&#39;dora&#39;,this)">
+      <div class="posture-reg">DORA</div>
+      <div class="posture-score" id="ps-dora" style="color: var(--red);">30%</div>
+      <div class="posture-label">Readiness</div>
+    </div>
+    <div class="posture-card p-fca" onclick="switchReg(&#39;fca&#39;,this)">
+      <div class="posture-reg">FCA AI Rules</div>
+      <div class="posture-score" id="ps-fca" style="color: var(--red);">30%</div>
+      <div class="posture-label">Readiness</div>
+    </div>
+    <div class="posture-card p-euai" onclick="switchReg(&#39;euai&#39;,this)">
+      <div class="posture-reg">EU AI Act</div>
+      <div class="posture-score" id="ps-euai" style="color: var(--red);">25%</div>
+      <div class="posture-label">Readiness</div>
+    </div>
+    <div class="posture-card p-gdpr" onclick="switchReg(&#39;gdpr&#39;,this)">
+      <div class="posture-reg">GDPR Art.22</div>
+      <div class="posture-score" id="ps-gdpr" style="color: var(--red);">30%</div>
+      <div class="posture-label">Readiness</div>
+    </div>
+  </div>
+
+  <!-- REG TABS -->
+  <div class="reg-tabs">
+    <button class="reg-tab active" id="tab-mifid" onclick="switchReg(&#39;mifid&#39;,null,this)">MiFID II</button>
+    <button class="reg-tab" id="tab-sox" onclick="switchReg(&#39;sox&#39;,null,this)">SOX 302/404</button>
+    <button class="reg-tab" id="tab-basel" onclick="switchReg(&#39;basel&#39;,null,this)">Basel III</button>
+    <button class="reg-tab" id="tab-dora" onclick="switchReg(&#39;dora&#39;,null,this)">DORA</button>
+    <button class="reg-tab" id="tab-fca" onclick="switchReg(&#39;fca&#39;,null,this)">FCA AI Rules</button>
+    <button class="reg-tab" id="tab-euai" onclick="switchReg(&#39;euai&#39;,null,this)">EU AI Act</button>
+    <button class="reg-tab" id="tab-gdpr" onclick="switchReg(&#39;gdpr&#39;,null,this)">GDPR Art.22</button>
+    <button class="reg-tab" id="tab-heatmap" onclick="switchReg(&#39;heatmap&#39;,null,this)">Heat Map</button>
+    <button class="reg-tab" id="tab-audit" onclick="switchReg(&#39;audit&#39;,null,this)">Audit Requirements</button>
+    <button class="reg-tab" id="tab-gates" onclick="switchReg(&#39;gates&#39;,null,this)">Policy Gates</button>
+  </div>
+
+  <!-- MAIN ANALYZER PANES -->
+  <div id="pane-mifid" style="">
+    <div class="analyzer-layout">
+      <div class="panel">
+        <div class="panel-title">MiFID II — AI Governance Checklist</div>
+        <div class="checklist" id="cl-mifid"><div><div class="section-divider">Critical Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">AI system classified as decision-support tool — not automated execution</span><span class="check-reg">Art. 25</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Human suitability assessment preserved before any client-facing output is used</span><span class="check-reg">Art. 25</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Model version and configuration disclosed to regulatory authority on request</span><span class="check-reg">Art. 16</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Per-invocation audit trail with regulatory reference tag (MiFID article)</span><span class="check-reg">Art. 25</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Record retention: AI decision records ≥ 5 years (10 years for certain instrument types)</span><span class="check-reg">Art. 25(6)</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Outsourcing controls: if third-party model, due diligence documented</span><span class="check-reg">Art. 16(5)</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Governance framework documented: who is responsible for AI system outputs</span><span class="check-reg">Art. 9</span></div></div><div><div class="section-divider">Standard Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Explainability: outputs reference data points that informed the analysis</span><span class="check-reg">Art. 25</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Client communication — AI-generated content labelled as such</span><span class="check-reg">Art. 24</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Conflicts of interest check: AI systems do not introduce conflicts through data selection</span><span class="check-reg">Art. 23</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Stress testing: AI outputs validated against historical data before production</span><span class="check-reg">Art. 16</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Staff competence: personnel using AI outputs have sufficient expertise to evaluate them</span><span class="check-reg">Art. 25</span></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="score-display">
+          <div class="score-big" id="score-mifid" style="color: var(--red);">0%</div>
+          <div class="score-label">MiFID II Readiness Score</div>
+          <div class="score-bar-wrap"><div class="score-bar" id="sbar-mifid" style="background: var(--red); width: 0%;"></div></div>
+        </div>
+        <div class="score-status" id="sstatus-mifid" style="color: var(--red); border-color: var(--red)44;">CRITICAL GAPS</div>
+        <div class="panel-title">Critical Gaps</div>
+        <div class="gap-list" id="gaps-mifid"><div class="gap-item gap-critical"><div class="gap-title">No per-invocation regulatory reference tagging</div><div class="gap-desc">Every AI invocation must be tagged with the specific MiFID II article it relates to. Untagged invocations cannot be traced in regulatory examination.</div></div><div class="gap-item gap-high"><div class="gap-title">Model version not captured in audit records</div><div class="gap-desc">If model version is not logged per invocation, you cannot demonstrate what system produced an output at a specific time.</div></div><div class="gap-item gap-high"><div class="gap-title">Explainability gap: outputs lack data source attribution</div><div class="gap-desc">MiFID II requires that advice outputs reference the basis for the analysis. AI-generated outputs without data lineage fail this requirement.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-sox" style="display:none;">
+    <div class="analyzer-layout">
+      <div class="panel">
+        <div class="panel-title">SOX 302/404 — AI Internal Controls Checklist</div>
+        <div class="checklist" id="cl-sox"><div><div class="section-divider">Critical Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">AI outputs in financial reporting processes reviewed by qualified person before use</span><span class="check-reg">Sec. 302</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">AI involvement disclosed in SOX attestation where material to internal controls</span><span class="check-reg">Sec. 302</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Change management applied to AI system configuration changes (IT General Controls)</span><span class="check-reg">Sec. 404</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Access controls: AI system access restricted to authorised users only</span><span class="check-reg">Sec. 404</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Segregation of duties: AI cannot both generate and approve financial outputs</span><span class="check-reg">Sec. 404</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Record retention: AI-related financial records ≥ 7 years</span><span class="check-reg">Sec. 802</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">External auditor briefed on AI systems used in audited financial processes</span><span class="check-reg">Sec. 404</span></div></div><div><div class="section-divider">Standard Controls</div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Fraud risk assessment includes AI-specific fraud vectors (output manipulation)</span><span class="check-reg">Sec. 302</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Deficiency evaluation: AI failures classified as material weakness if financial impact</span><span class="check-reg">Sec. 404</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Continuous monitoring: anomaly detection on AI outputs in financial processes</span><span class="check-reg">Sec. 302</span></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="score-display">
+          <div class="score-big" id="score-sox" style="color: var(--red);">30%</div>
+          <div class="score-label">SOX Readiness Score</div>
+          <div class="score-bar-wrap"><div class="score-bar" id="sbar-sox" style="background: var(--red); width: 30%;"></div></div>
+        </div>
+        <div class="score-status" id="sstatus-sox" style="color: var(--red); border-color: var(--red)44;">CRITICAL GAPS</div>
+        <div class="panel-title">Critical Gaps</div>
+        <div class="gap-list" id="gaps-sox"><div class="gap-item gap-critical"><div class="gap-title">AI involvement not in SOX attestation</div><div class="gap-desc">Section 302 certification must cover material controls. If AI materially influences financial reporting, omitting it from the attestation is a misstatement risk.</div></div><div class="gap-item gap-critical"><div class="gap-title">Insufficient access controls on AI system</div><div class="gap-desc">SOX requires documented access controls on all systems that affect financial reporting. AI inference endpoints must be in scope.</div></div><div class="gap-item gap-high"><div class="gap-title">Change management gap: AI config changes not controlled</div><div class="gap-desc">Uncontrolled changes to AI prompts, models, or parameters in financial reporting contexts are an IT General Control deficiency.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-basel" style="display:none;">
+    <div class="analyzer-layout">
+      <div class="panel">
+        <div class="panel-title">Basel III — AI Model Risk Governance Checklist</div>
+        <div class="checklist" id="cl-basel"><div><div class="section-divider">Critical Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Model risk management framework explicitly covers AI/ML models (SR 11-7 equivalent)</span><span class="check-reg">Pillar 2</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Model validation: independent review of AI model before deployment in risk functions</span><span class="check-reg">Pillar 2</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Model inventory: AI models registered in model risk register with risk tier</span><span class="check-reg">Pillar 2</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Operational risk: AI failure scenarios included in operational risk assessments</span><span class="check-reg">Pillar 1</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Credit risk: AI-generated credit scores treated as model output — not ground truth</span><span class="check-reg">Pillar 2</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Model limitations documented and communicated to model users</span><span class="check-reg">Pillar 2</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Override process: documented process for human override of AI risk outputs</span><span class="check-reg">Pillar 2</span></div></div><div><div class="section-divider">Standard Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Capital: if AI is material to risk calculations, capital charge implications assessed</span><span class="check-reg">Pillar 1</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Stress testing: AI model outputs validated under stressed conditions</span><span class="check-reg">Pillar 2</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Concentration risk: single AI vendor dependence assessed as concentration risk</span><span class="check-reg">Pillar 2</span></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="score-display">
+          <div class="score-big" id="score-basel" style="color: var(--red);">30%</div>
+          <div class="score-label">Basel III Readiness Score</div>
+          <div class="score-bar-wrap"><div class="score-bar" id="sbar-basel" style="background: var(--red); width: 30%;"></div></div>
+        </div>
+        <div class="score-status" id="sstatus-basel" style="color: var(--red); border-color: var(--red)44;">CRITICAL GAPS</div>
+        <div class="panel-title">Critical Gaps</div>
+        <div class="gap-list" id="gaps-basel"><div class="gap-item gap-critical"><div class="gap-title">AI not in model risk register</div><div class="gap-desc">Basel Pillar 2 requires all risk-relevant models to be inventoried and risk-tiered. AI systems producing credit or market risk outputs must be registered.</div></div><div class="gap-item gap-high"><div class="gap-title">No independent model validation for AI</div><div class="gap-desc">SR 11-7 and equivalent Basel guidance require independent validation of models used in risk functions. Internal validation by model developers is insufficient.</div></div><div class="gap-item gap-medium"><div class="gap-title">Model limitations not documented for users</div><div class="gap-desc">Personnel relying on AI outputs must understand the assumptions, limitations, and failure modes. Undocumented limitations create interpretive risk.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-dora" style="display:none;">
+    <div class="analyzer-layout">
+      <div class="panel">
+        <div class="panel-title">DORA — Digital Operational Resilience Act Checklist</div>
+        <div class="checklist" id="cl-dora"><div><div class="section-divider">Critical Controls</div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">AI system included in ICT risk management framework (Art. 6)</span><span class="check-reg">Art. 6</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Third-party AI provider classified as Critical ICT Third Party Provider if material</span><span class="check-reg">Art. 28</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Contractual provisions in AI vendor agreement covering DORA requirements</span><span class="check-reg">Art. 30</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">ICT incident classification: AI failures classified and reportable if significant</span><span class="check-reg">Art. 17</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Register of contracts: AI vendor relationships documented in ICT contract register</span><span class="check-reg">Art. 28</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Business continuity plan covers AI system failure scenarios</span><span class="check-reg">Art. 11</span></div></div><div><div class="section-divider">Standard Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Digital operational resilience testing: AI systems in scope of penetration testing</span><span class="check-reg">Art. 24</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Audit rights: contract with AI vendor grants right to audit and inspect</span><span class="check-reg">Art. 30</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Sub-outsourcing: if AI vendor uses further sub-processors, disclosure required</span><span class="check-reg">Art. 30</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Exit plan: documented plan for transitioning away from AI vendor</span><span class="check-reg">Art. 28</span></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="score-display">
+          <div class="score-big" id="score-dora" style="color: var(--red);">30%</div>
+          <div class="score-label">DORA Readiness Score</div>
+          <div class="score-bar-wrap"><div class="score-bar" id="sbar-dora" style="background: var(--red); width: 30%;"></div></div>
+        </div>
+        <div class="score-status" id="sstatus-dora" style="color: var(--red); border-color: var(--red)44;">CRITICAL GAPS</div>
+        <div class="panel-title">Critical Gaps</div>
+        <div class="gap-list" id="gaps-dora"><div class="gap-item gap-critical"><div class="gap-title">AI vendor not in ICT risk management framework</div><div class="gap-desc">DORA requires all ICT risks including AI vendor risks to be managed under a documented framework. Absence is a direct regulatory breach for EU financial entities from Jan 2025.</div></div><div class="gap-item gap-critical"><div class="gap-title">Contractual provisions insufficient for DORA Art. 30</div><div class="gap-desc">DORA specifies mandatory contractual provisions for ICT providers. Generic SaaS terms do not meet Art. 30 requirements.</div></div><div class="gap-item gap-high"><div class="gap-title">AI failure not in ICT incident response plan</div><div class="gap-desc">A significant AI system failure (incorrect credit decisions at scale, compliance reporting error) must be classified and reportable under DORA Art. 17.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-fca" style="display:none;">
+    <div class="analyzer-layout">
+      <div class="panel">
+        <div class="panel-title">FCA AI Rules — PS24/1 &amp; DP5/22 Checklist</div>
+        <div class="checklist" id="cl-fca"><div><div class="section-divider">Critical Controls</div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">AI system purpose clearly defined — customer outcomes test applied</span><span class="check-reg">PS24/1</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Accountability: named Senior Manager responsible for AI system under SMCR</span><span class="check-reg">SMCR</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Bias testing: AI outputs tested for differential impact on protected characteristics</span><span class="check-reg">DP5/22</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Consumer Duty: AI does not create consumer harm through error or bias</span><span class="check-reg">Consumer Duty</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Resilience: AI system failure does not cause consumer harm or market disruption</span><span class="check-reg">PS24/1</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Governance: AI oversight included in firm-wide governance framework</span><span class="check-reg">PS24/1</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Explainability: firm can explain AI decisions to consumers on request</span><span class="check-reg">Consumer Duty</span></div></div><div><div class="section-divider">Standard Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Transparency: customers informed when AI is used in decisions affecting them</span><span class="check-reg">PS24/1</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Ongoing monitoring: AI performance monitored against FCA-specified metrics</span><span class="check-reg">DP5/22</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Regulatory reporting: AI-related incidents reported to FCA within required timeframes</span><span class="check-reg">SUP 15</span></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="score-display">
+          <div class="score-big" id="score-fca" style="color: var(--red);">30%</div>
+          <div class="score-label">FCA AI Readiness Score</div>
+          <div class="score-bar-wrap"><div class="score-bar" id="sbar-fca" style="background: var(--red); width: 30%;"></div></div>
+        </div>
+        <div class="score-status" id="sstatus-fca" style="color: var(--red); border-color: var(--red)44;">CRITICAL GAPS</div>
+        <div class="panel-title">Critical Gaps</div>
+        <div class="gap-list" id="gaps-fca"><div class="gap-item gap-critical"><div class="gap-title">No named SMCR accountable individual for AI</div><div class="gap-desc">FCA requires a Senior Manager to take personal accountability for AI systems under SMCR. Absence is a direct regulatory exposure.</div></div><div class="gap-item gap-critical"><div class="gap-title">Bias testing not conducted before deployment</div><div class="gap-desc">FCA expects firms to test AI systems for differential consumer impact. Deploying without bias testing is a Consumer Duty risk.</div></div><div class="gap-item gap-high"><div class="gap-title">Customer-facing AI outputs not identified as AI-generated</div><div class="gap-desc">FCA transparency expectations require consumers to know when AI influences decisions. Undisclosed AI use creates consumer harm risk.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-euai" style="display:none;">
+    <div class="analyzer-layout">
+      <div class="panel">
+        <div class="panel-title">EU AI Act — High-Risk AI System Checklist (Financial)</div>
+        <div class="checklist" id="cl-euai"><div><div class="section-divider">Critical Controls</div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">AI system classified under EU AI Act Annex III (credit scoring = high-risk)</span><span class="check-reg">Art. 6</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Conformity assessment completed before deployment of high-risk AI system</span><span class="check-reg">Art. 43</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Technical documentation prepared per Annex IV requirements</span><span class="check-reg">Art. 11</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">EU database registration completed for high-risk AI systems</span><span class="check-reg">Art. 51</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Human oversight measures implemented per Art. 14 requirements</span><span class="check-reg">Art. 14</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Accuracy, robustness, and cybersecurity requirements met per Art. 15</span><span class="check-reg">Art. 15</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Logging capability: system logs operations for 6-month minimum</span><span class="check-reg">Art. 12</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Serious incident reporting to national authority within 15 days</span><span class="check-reg">Art. 73</span></div></div><div><div class="section-divider">Standard Controls</div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Instructions for use document prepared for deployers</span><span class="check-reg">Art. 13</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Post-market monitoring system implemented per Art. 72</span><span class="check-reg">Art. 72</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Fundamental rights impact assessment conducted (public sector)</span><span class="check-reg">Art. 27</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">CE marking applied (where applicable) or equivalent conformity indicator</span><span class="check-reg">Art. 48</span></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="score-display">
+          <div class="score-big" id="score-euai" style="color: var(--red);">25%</div>
+          <div class="score-label">EU AI Act Readiness Score</div>
+          <div class="score-bar-wrap"><div class="score-bar" id="sbar-euai" style="background: var(--red); width: 25%;"></div></div>
+        </div>
+        <div class="score-status" id="sstatus-euai" style="color: var(--red); border-color: var(--red)44;">CRITICAL GAPS</div>
+        <div class="panel-title">Critical Gaps</div>
+        <div class="gap-list" id="gaps-euai"><div class="gap-item gap-critical"><div class="gap-title">No conformity assessment for credit scoring AI</div><div class="gap-desc">Credit scoring AI is explicitly listed in Annex III as high-risk. Deploying without conformity assessment is a direct breach of EU AI Act Art. 43.</div></div><div class="gap-item gap-critical"><div class="gap-title">Not registered in EU AI database</div><div class="gap-desc">Art. 51 requires providers and deployers of listed high-risk AI systems to register before deployment. Unregistered systems are non-compliant.</div></div><div class="gap-item gap-critical"><div class="gap-title">Technical documentation not prepared</div><div class="gap-desc">Annex IV specifies mandatory technical documentation content. Without it, conformity assessment cannot be completed.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pane-gdpr" style="display:none;">
+    <div class="analyzer-layout">
+      <div class="panel">
+        <div class="panel-title">GDPR Article 22 — Automated Decision-Making Checklist</div>
+        <div class="checklist" id="cl-gdpr"><div><div class="section-divider">Critical Controls</div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Determination: does AI constitute solely automated decision-making with legal/significant effect?</span><span class="check-reg">Art. 22(1)</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">If Art. 22 applies: identify legal basis (consent / contractual necessity / explicit legislation)</span><span class="check-reg">Art. 22(2)</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Right to explanation: process in place to explain AI-based decisions to data subjects</span><span class="check-reg">Art. 22(3)</span></div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Right to human review: data subject can request human review of AI decisions</span><span class="check-reg">Art. 22(3)</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">DPIA completed for high-risk AI processing (automated profiling)</span><span class="check-reg">Art. 35</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Data subject rights response process covers AI-generated outputs</span><span class="check-reg">Art. 15-22</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">International transfers: if AI model hosted outside EEA, Art. 46 safeguards documented</span><span class="check-reg">Art. 46</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Processor agreement: if AI is a processor, DPA in place with all requirements</span><span class="check-reg">Art. 28</span></div></div><div><div class="section-divider">Standard Controls</div><div class="check-item checked" tabindex="0" role="checkbox" aria-checked="true"><div class="checkbox"></div><span class="check-text">Privacy by design: minimum data collection principle applied to AI inputs</span><span class="check-reg">Art. 25</span></div><div class="check-item" tabindex="0" role="checkbox" aria-checked="false"><div class="checkbox"></div><span class="check-text">Special category data: if AI processes sensitive data, explicit lawful basis identified</span><span class="check-reg">Art. 9</span></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="score-display">
+          <div class="score-big" id="score-gdpr" style="color: var(--red);">30%</div>
+          <div class="score-label">GDPR Art.22 Readiness Score</div>
+          <div class="score-bar-wrap"><div class="score-bar" id="sbar-gdpr" style="background: var(--red); width: 30%;"></div></div>
+        </div>
+        <div class="score-status" id="sstatus-gdpr" style="color: var(--red); border-color: var(--red)44;">CRITICAL GAPS</div>
+        <div class="panel-title">Critical Gaps</div>
+        <div class="gap-list" id="gaps-gdpr"><div class="gap-item gap-critical"><div class="gap-title">No Art. 22 determination documented</div><div class="gap-desc">Organisations must actively determine whether their AI use constitutes automated decision-making under Art. 22. Absence of documented determination is itself a compliance gap.</div></div><div class="gap-item gap-critical"><div class="gap-title">No DPIA for AI profiling</div><div class="gap-desc">Art. 35 requires a DPIA before processing that is likely to result in high risk. AI profiling of individuals almost always triggers this requirement.</div></div><div class="gap-item gap-high"><div class="gap-title">No right-to-explanation process</div><div class="gap-desc">Where Art. 22 applies, data subjects have the right to a meaningful explanation of the logic involved. Absence of an explanation process is a direct breach.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEAT MAP -->
+  <div id="pane-heatmap" style="display:none;">
+    <div class="panel" style="margin-bottom:1.5rem;">
+      <div class="panel-title">Risk Heat Map — Agent Capability vs. Regulatory Requirement Coverage</div>
+      <div style="overflow-x:auto;">
+        <div id="heatMapContent"></div>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1rem;font-family:var(--mono);font-size:0.65rem;">
+        <span style="color:var(--green);">■ Full Coverage</span>
+        <span style="color:var(--gold);">■ Partial</span>
+        <span style="color:var(--red);">■ Gap / Missing</span>
+        <span style="color:var(--text3);">■ Not Applicable</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT REQUIREMENTS -->
+  <div id="pane-audit" style="display:none;">
+    <div class="panel" style="margin-bottom:1.5rem;">
+      <div class="panel-title">Audit &amp; Logging Requirements by Regulatory Framework</div>
+      <div style="overflow-x:auto;">
+        <table class="audit-table" id="auditTable">
+          <thead>
+            <tr>
+              <th>Framework</th><th>Record Type</th><th>Minimum Retention</th>
+              <th>Disclosure Obligation</th><th>Immutability Required</th><th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="auditBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- POLICY GATES -->
+  <div id="pane-gates" style="display:none;">
+    <div class="panel" style="margin-bottom:1.5rem;">
+      <div class="panel-title">MCP Policy Gate Specification — What Must Be Enforced at the Infrastructure Layer</div>
+      <p style="font-size:0.82rem;color:var(--text2);line-height:1.7;margin-bottom:1.25rem;">
+        Each policy gate below must be implemented at the MCP (Model Context Protocol) tool layer — not as application logic or prompt instructions. Application-layer controls can be bypassed by prompt injection or agent reasoning. Infrastructure-layer gates cannot be bypassed by model output.
+      </p>
+      <div class="gate-list" id="gateList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ── REGULATORY DATA ── */
+const REGS = {
+  mifid: {
+    color: '#4f7fff',
+    items: [
+      {text:'AI system classified as decision-support tool — not automated execution', ref:'Art. 25', critical:true},
+      {text:'Human suitability assessment preserved before any client-facing output is used', ref:'Art. 25', critical:true},
+      {text:'Model version and configuration disclosed to regulatory authority on request', ref:'Art. 16', critical:true},
+      {text:'Per-invocation audit trail with regulatory reference tag (MiFID article)', ref:'Art. 25', critical:true},
+      {text:'Explainability: outputs reference data points that informed the analysis', ref:'Art. 25', critical:false},
+      {text:'Record retention: AI decision records ≥ 5 years (10 years for certain instrument types)', ref:'Art. 25(6)', critical:true},
+      {text:'Client communication — AI-generated content labelled as such', ref:'Art. 24', critical:false},
+      {text:'Conflicts of interest check: AI systems do not introduce conflicts through data selection', ref:'Art. 23', critical:false},
+      {text:'Outsourcing controls: if third-party model, due diligence documented', ref:'Art. 16(5)', critical:true},
+      {text:'Stress testing: AI outputs validated against historical data before production', ref:'Art. 16', critical:false},
+      {text:'Governance framework documented: who is responsible for AI system outputs', ref:'Art. 9', critical:true},
+      {text:'Staff competence: personnel using AI outputs have sufficient expertise to evaluate them', ref:'Art. 25', critical:false},
+    ],
+    gaps: [
+      {sev:'critical', title:'No per-invocation regulatory reference tagging', desc:'Every AI invocation must be tagged with the specific MiFID II article it relates to. Untagged invocations cannot be traced in regulatory examination.'},
+      {sev:'high', title:'Model version not captured in audit records', desc:'If model version is not logged per invocation, you cannot demonstrate what system produced an output at a specific time.'},
+      {sev:'high', title:'Explainability gap: outputs lack data source attribution', desc:'MiFID II requires that advice outputs reference the basis for the analysis. AI-generated outputs without data lineage fail this requirement.'},
+    ]
+  },
+  sox: {
+    color: '#f5c842',
+    items: [
+      {text:'AI outputs in financial reporting processes reviewed by qualified person before use', ref:'Sec. 302', critical:true},
+      {text:'AI involvement disclosed in SOX attestation where material to internal controls', ref:'Sec. 302', critical:true},
+      {text:'Change management applied to AI system configuration changes (IT General Controls)', ref:'Sec. 404', critical:true},
+      {text:'Access controls: AI system access restricted to authorised users only', ref:'Sec. 404', critical:true},
+      {text:'Segregation of duties: AI cannot both generate and approve financial outputs', ref:'Sec. 404', critical:true},
+      {text:'Record retention: AI-related financial records ≥ 7 years', ref:'Sec. 802', critical:true},
+      {text:'Fraud risk assessment includes AI-specific fraud vectors (output manipulation)', ref:'Sec. 302', critical:false},
+      {text:'Deficiency evaluation: AI failures classified as material weakness if financial impact', ref:'Sec. 404', critical:false},
+      {text:'External auditor briefed on AI systems used in audited financial processes', ref:'Sec. 404', critical:true},
+      {text:'Continuous monitoring: anomaly detection on AI outputs in financial processes', ref:'Sec. 302', critical:false},
+    ],
+    gaps: [
+      {sev:'critical', title:'AI involvement not in SOX attestation', desc:'Section 302 certification must cover material controls. If AI materially influences financial reporting, omitting it from the attestation is a misstatement risk.'},
+      {sev:'critical', title:'Insufficient access controls on AI system', desc:'SOX requires documented access controls on all systems that affect financial reporting. AI inference endpoints must be in scope.'},
+      {sev:'high', title:'Change management gap: AI config changes not controlled', desc:'Uncontrolled changes to AI prompts, models, or parameters in financial reporting contexts are an IT General Control deficiency.'},
+    ]
+  },
+  basel: {
+    color: '#2dffb0',
+    items: [
+      {text:'Model risk management framework explicitly covers AI/ML models (SR 11-7 equivalent)', ref:'Pillar 2', critical:true},
+      {text:'Model validation: independent review of AI model before deployment in risk functions', ref:'Pillar 2', critical:true},
+      {text:'Model inventory: AI models registered in model risk register with risk tier', ref:'Pillar 2', critical:true},
+      {text:'Operational risk: AI failure scenarios included in operational risk assessments', ref:'Pillar 1', critical:true},
+      {text:'Credit risk: AI-generated credit scores treated as model output — not ground truth', ref:'Pillar 2', critical:true},
+      {text:'Capital: if AI is material to risk calculations, capital charge implications assessed', ref:'Pillar 1', critical:false},
+      {text:'Stress testing: AI model outputs validated under stressed conditions', ref:'Pillar 2', critical:false},
+      {text:'Concentration risk: single AI vendor dependence assessed as concentration risk', ref:'Pillar 2', critical:false},
+      {text:'Model limitations documented and communicated to model users', ref:'Pillar 2', critical:true},
+      {text:'Override process: documented process for human override of AI risk outputs', ref:'Pillar 2', critical:true},
+    ],
+    gaps: [
+      {sev:'critical', title:'AI not in model risk register', desc:'Basel Pillar 2 requires all risk-relevant models to be inventoried and risk-tiered. AI systems producing credit or market risk outputs must be registered.'},
+      {sev:'high', title:'No independent model validation for AI', desc:'SR 11-7 and equivalent Basel guidance require independent validation of models used in risk functions. Internal validation by model developers is insufficient.'},
+      {sev:'medium', title:'Model limitations not documented for users', desc:'Personnel relying on AI outputs must understand the assumptions, limitations, and failure modes. Undocumented limitations create interpretive risk.'},
+    ]
+  },
+  dora: {
+    color: '#ff8c42',
+    items: [
+      {text:'AI system included in ICT risk management framework (Art. 6)', ref:'Art. 6', critical:true},
+      {text:'Third-party AI provider classified as Critical ICT Third Party Provider if material', ref:'Art. 28', critical:true},
+      {text:'Contractual provisions in AI vendor agreement covering DORA requirements', ref:'Art. 30', critical:true},
+      {text:'ICT incident classification: AI failures classified and reportable if significant', ref:'Art. 17', critical:true},
+      {text:'Digital operational resilience testing: AI systems in scope of penetration testing', ref:'Art. 24', critical:false},
+      {text:'Register of contracts: AI vendor relationships documented in ICT contract register', ref:'Art. 28', critical:true},
+      {text:'Business continuity plan covers AI system failure scenarios', ref:'Art. 11', critical:true},
+      {text:'Audit rights: contract with AI vendor grants right to audit and inspect', ref:'Art. 30', critical:false},
+      {text:'Sub-outsourcing: if AI vendor uses further sub-processors, disclosure required', ref:'Art. 30', critical:false},
+      {text:'Exit plan: documented plan for transitioning away from AI vendor', ref:'Art. 28', critical:false},
+    ],
+    gaps: [
+      {sev:'critical', title:'AI vendor not in ICT risk management framework', desc:'DORA requires all ICT risks including AI vendor risks to be managed under a documented framework. Absence is a direct regulatory breach for EU financial entities from Jan 2025.'},
+      {sev:'critical', title:'Contractual provisions insufficient for DORA Art. 30', desc:'DORA specifies mandatory contractual provisions for ICT providers. Generic SaaS terms do not meet Art. 30 requirements.'},
+      {sev:'high', title:'AI failure not in ICT incident response plan', desc:'A significant AI system failure (incorrect credit decisions at scale, compliance reporting error) must be classified and reportable under DORA Art. 17.'},
+    ]
+  },
+  fca: {
+    color: '#7c4fff',
+    items: [
+      {text:'AI system purpose clearly defined — customer outcomes test applied', ref:'PS24/1', critical:true},
+      {text:'Accountability: named Senior Manager responsible for AI system under SMCR', ref:'SMCR', critical:true},
+      {text:'Bias testing: AI outputs tested for differential impact on protected characteristics', ref:'DP5/22', critical:true},
+      {text:'Consumer Duty: AI does not create consumer harm through error or bias', ref:'Consumer Duty', critical:true},
+      {text:'Transparency: customers informed when AI is used in decisions affecting them', ref:'PS24/1', critical:false},
+      {text:'Resilience: AI system failure does not cause consumer harm or market disruption', ref:'PS24/1', critical:true},
+      {text:'Ongoing monitoring: AI performance monitored against FCA-specified metrics', ref:'DP5/22', critical:false},
+      {text:'Governance: AI oversight included in firm-wide governance framework', ref:'PS24/1', critical:true},
+      {text:'Explainability: firm can explain AI decisions to consumers on request', ref:'Consumer Duty', critical:true},
+      {text:'Regulatory reporting: AI-related incidents reported to FCA within required timeframes', ref:'SUP 15', critical:false},
+    ],
+    gaps: [
+      {sev:'critical', title:'No named SMCR accountable individual for AI', desc:'FCA requires a Senior Manager to take personal accountability for AI systems under SMCR. Absence is a direct regulatory exposure.'},
+      {sev:'critical', title:'Bias testing not conducted before deployment', desc:'FCA expects firms to test AI systems for differential consumer impact. Deploying without bias testing is a Consumer Duty risk.'},
+      {sev:'high', title:'Customer-facing AI outputs not identified as AI-generated', desc:'FCA transparency expectations require consumers to know when AI influences decisions. Undisclosed AI use creates consumer harm risk.'},
+    ]
+  },
+  euai: {
+    color: '#ff4f6b',
+    items: [
+      {text:'AI system classified under EU AI Act Annex III (credit scoring = high-risk)', ref:'Art. 6', critical:true},
+      {text:'Conformity assessment completed before deployment of high-risk AI system', ref:'Art. 43', critical:true},
+      {text:'Technical documentation prepared per Annex IV requirements', ref:'Art. 11', critical:true},
+      {text:'EU database registration completed for high-risk AI systems', ref:'Art. 51', critical:true},
+      {text:'Human oversight measures implemented per Art. 14 requirements', ref:'Art. 14', critical:true},
+      {text:'Accuracy, robustness, and cybersecurity requirements met per Art. 15', ref:'Art. 15', critical:true},
+      {text:'Logging capability: system logs operations for 6-month minimum', ref:'Art. 12', critical:true},
+      {text:'Instructions for use document prepared for deployers', ref:'Art. 13', critical:false},
+      {text:'Post-market monitoring system implemented per Art. 72', ref:'Art. 72', critical:false},
+      {text:'Fundamental rights impact assessment conducted (public sector)', ref:'Art. 27', critical:false},
+      {text:'Serious incident reporting to national authority within 15 days', ref:'Art. 73', critical:true},
+      {text:'CE marking applied (where applicable) or equivalent conformity indicator', ref:'Art. 48', critical:false},
+    ],
+    gaps: [
+      {sev:'critical', title:'No conformity assessment for credit scoring AI', desc:'Credit scoring AI is explicitly listed in Annex III as high-risk. Deploying without conformity assessment is a direct breach of EU AI Act Art. 43.'},
+      {sev:'critical', title:'Not registered in EU AI database', desc:'Art. 51 requires providers and deployers of listed high-risk AI systems to register before deployment. Unregistered systems are non-compliant.'},
+      {sev:'critical', title:'Technical documentation not prepared', desc:'Annex IV specifies mandatory technical documentation content. Without it, conformity assessment cannot be completed.'},
+    ]
+  },
+  gdpr: {
+    color: '#00d4ff',
+    items: [
+      {text:'Determination: does AI constitute solely automated decision-making with legal/significant effect?', ref:'Art. 22(1)', critical:true},
+      {text:'If Art. 22 applies: identify legal basis (consent / contractual necessity / explicit legislation)', ref:'Art. 22(2)', critical:true},
+      {text:'Right to explanation: process in place to explain AI-based decisions to data subjects', ref:'Art. 22(3)', critical:true},
+      {text:'Right to human review: data subject can request human review of AI decisions', ref:'Art. 22(3)', critical:true},
+      {text:'DPIA completed for high-risk AI processing (automated profiling)', ref:'Art. 35', critical:true},
+      {text:'Privacy by design: minimum data collection principle applied to AI inputs', ref:'Art. 25', critical:false},
+      {text:'Data subject rights response process covers AI-generated outputs', ref:'Art. 15-22', critical:true},
+      {text:'International transfers: if AI model hosted outside EEA, Art. 46 safeguards documented', ref:'Art. 46', critical:true},
+      {text:'Processor agreement: if AI is a processor, DPA in place with all requirements', ref:'Art. 28', critical:true},
+      {text:'Special category data: if AI processes sensitive data, explicit lawful basis identified', ref:'Art. 9', critical:false},
+    ],
+    gaps: [
+      {sev:'critical', title:'No Art. 22 determination documented', desc:'Organisations must actively determine whether their AI use constitutes automated decision-making under Art. 22. Absence of documented determination is itself a compliance gap.'},
+      {sev:'critical', title:'No DPIA for AI profiling', desc:'Art. 35 requires a DPIA before processing that is likely to result in high risk. AI profiling of individuals almost always triggers this requirement.'},
+      {sev:'high', title:'No right-to-explanation process', desc:'Where Art. 22 applies, data subjects have the right to a meaningful explanation of the logic involved. Absence of an explanation process is a direct breach.'},
+    ]
+  }
+};
+
+const checks = {}; // {regId_idx: bool}
+let currentReg = 'mifid';
+
+function getScore(regId) {
+  const items = REGS[regId].items;
+  const done = items.filter((_,i)=>checks[regId+'_'+i]).length;
+  return Math.round(done/items.length*100);
+}
+
+function scoreLabel(s) {
+  if (s>=85) return {label:'STRONG',col:'var(--green)'};
+  if (s>=65) return {label:'ADEQUATE',col:'var(--gold)'};
+  if (s>=40) return {label:'PARTIAL',col:'var(--orange)'};
+  return {label:'CRITICAL GAPS',col:'var(--red)'};
+}
+
+function buildChecklist(regId) {
+  const reg = REGS[regId];
+  const el = document.getElementById('cl-'+regId);
+  if(!el) return;
+  el.innerHTML = '';
+  const critDiv = document.createElement('div');
+  critDiv.innerHTML = '<div class="section-divider">Critical Controls</div>';
+  const normDiv = document.createElement('div');
+  normDiv.innerHTML = '<div class="section-divider">Standard Controls</div>';
+
+  reg.items.forEach((item,i) => {
+    const key = regId+'_'+i;
+    const div = document.createElement('div');
+    div.className = 'check-item' + (checks[key]?' checked':'');
+    div.setAttribute('tabindex','0');
+    div.setAttribute('role','checkbox');
+    div.setAttribute('aria-checked', checks[key]?'true':'false');
+    div.innerHTML = `<div class="checkbox"></div><span class="check-text">${item.text}</span><span class="check-reg">${item.ref}</span>`;
+    div.onclick = () => { checks[key]=!checks[key]; div.classList.toggle('checked',checks[key]); div.setAttribute('aria-checked',checks[key]); updateScores(); };
+    div.onkeydown = e => { if(e.key===' '||e.key==='Enter'){e.preventDefault();div.onclick();} };
+    item.critical ? critDiv.appendChild(div) : normDiv.appendChild(div);
+  });
+  el.appendChild(critDiv);
+  el.appendChild(normDiv);
+}
+
+function updateScores() {
+  Object.keys(REGS).forEach(regId => {
+    const s = getScore(regId);
+    const {label,col} = scoreLabel(s);
+    // posture bar
+    const ps = document.getElementById('ps-'+regId);
+    if(ps){ps.textContent=s+'%'; ps.style.color=col;}
+    // score display
+    const sd = document.getElementById('score-'+regId);
+    if(sd){sd.textContent=s+'%'; sd.style.color=col;}
+    const sb = document.getElementById('sbar-'+regId);
+    if(sb){sb.style.width=s+'%'; sb.style.background=col;}
+    const ss = document.getElementById('sstatus-'+regId);
+    if(ss){ss.textContent=label; ss.style.color=col; ss.style.borderColor=col+'44';}
+    // gaps
+    const gp = document.getElementById('gaps-'+regId);
+    if(gp){
+      const unchecked = REGS[regId].items.filter((_,i)=>!checks[regId+'_'+i]);
+      const gaps = REGS[regId].gaps;
+      gp.innerHTML = gaps.map(g=>`<div class="gap-item gap-${g.sev}"><div class="gap-title">${g.title}</div><div class="gap-desc">${g.desc}</div></div>`).join('');
+    }
+  });
+}
+
+function switchReg(regId, card, tab) {
+  // Hide all panes
+  ['mifid','sox','basel','dora','fca','euai','gdpr','heatmap','audit','gates'].forEach(id=>{
+    const p=document.getElementById('pane-'+id);
+    if(p) p.style.display='none';
+  });
+  const target = document.getElementById('pane-'+regId);
+  if(target) target.style.display='';
+  // Tab styling
+  document.querySelectorAll('.reg-tab').forEach(t=>t.classList.remove('active'));
+  const targetTab = tab || document.getElementById('tab-'+regId);
+  if(targetTab) targetTab.classList.add('active');
+  // Posture card
+  document.querySelectorAll('.posture-card').forEach(c=>c.classList.remove('active'));
+  if(card) card.classList.add('active');
+  currentReg = regId;
+  if(regId==='heatmap') buildHeatMap();
+  if(regId==='audit') buildAuditTable();
+  if(regId==='gates') buildGates();
+}
+
+function buildHeatMap() {
+  const el = document.getElementById('heatMapContent');
+  const caps = ['Per-invocation audit log','Model version lock','Human review gate','Confidence threshold','Data lineage','Spend authority','Anomaly detection','Access controls','Change management'];
+  const regs = ['MiFID II','SOX','Basel III','DORA','FCA','EU AI Act','GDPR'];
+  // Coverage matrix: 0=none, 1=partial, 2=full, 3=N/A
+  const matrix = [
+    [2,1,2,1,2,2,1],[2,2,1,1,2,2,2],[2,2,2,1,2,2,1],
+    [1,2,1,2,1,1,1],[2,1,2,0,2,2,2],[0,2,1,0,2,2,1],
+    [2,2,2,1,1,2,2],[2,2,2,2,2,2,2],[1,2,1,1,2,1,1],
+  ];
+  const labels=['N/A','Gap','Partial','Full'];
+  const classes=['h-na','h-none','h-partial','h-full'];
+
+  let html = `<div style="display:grid;grid-template-columns:180px repeat(${regs.length},1fr);gap:2px;min-width:600px;">`;
+  html += `<div class="heat-cell heat-header">Capability</div>`;
+  regs.forEach(r=>{ html+=`<div class="heat-cell heat-header" style="text-align:center;font-size:0.55rem;">${r}</div>`; });
+  caps.forEach((cap,ci)=>{
+    html+=`<div class="heat-cell" style="background:var(--panel);color:var(--text2);text-align:left;font-size:0.65rem;">${cap}</div>`;
+    matrix[ci].forEach(v=>{ html+=`<div class="heat-cell ${classes[v]}" style="text-align:center;">${labels[v]}</div>`; });
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function buildAuditTable() {
+  const rows = [
+    ['MiFID II Art.25','Client communication &amp; AI output records','5 years (10 for some instruments)','On regulatory request — within 5 business days','Yes — tamper-evident required','Includes system prompt version and model ID'],
+    ['SOX Sec.302/404','Financial reporting AI output records','7 years','Internal audit access; external auditor on request','Yes — SOX requires documentation integrity','Change log for AI configuration changes'],
+    ['Basel III Pillar 2','Model validation &amp; AI risk register records','As long as model in use +3 years','Regulator inspection on request','Yes — model register is evidence document','Includes model tier, validation date, known limitations'],
+    ['DORA Art.28/30','ICT contract register including AI vendor agreements','Duration of contract + 5 years','Competent authority on request','Yes — register must reflect current state','Must include AI vendor sub-processor chain'],
+    ['FCA SMCR','AI accountability decision records','6 years','FCA on request; internal audit','Yes — SMCR records are regulatory evidence','Must link named Senior Manager to AI system'],
+    ['EU AI Act Art.12','Operational logs of high-risk AI system','Minimum 6 months post-use','National market surveillance authority','Yes — logging must be automatic and tamper-resistant','Logs must enable post-hoc incident investigation'],
+    ['GDPR Art.22/35','DPIA and automated decision records','Life of processing + 3 years','Data subject on request; supervisory authority','Yes — DPIAs are evidence documents','Must include logic of automated processing'],
+  ];
+  document.getElementById('auditBody').innerHTML = rows.map(r=>
+    `<tr>${r.map((c,i)=>`<td style="${i===0?'color:var(--text);font-weight:600;':''}">${c}</td>`).join('')}</tr>`
+  ).join('');
+}
+
+function buildGates() {
+  const gates = [
+    {color:'var(--glow)',trigger:'TRIGGER: AI output classified as DECISION or RECOMMENDATION',action:'Enforce mandatory human review gate before any output reaches downstream system. No automatic passthrough regardless of confidence score.',ref:'MiFID II Art.25 | SOX Sec.302 | FCA Consumer Duty'},
+    {color:'var(--red)',trigger:'TRIGGER: Model version not matching governance-approved version string',action:'BLOCK invocation. Log violation. Alert compliance officer. No inference with unapproved model version.',ref:'Basel III Pillar 2 Model Risk | EU AI Act Art.9 | FCA PS24/1'},
+    {color:'var(--gold)',trigger:'TRIGGER: Session spend exceeds per-agent daily spend authority',action:'BLOCK further invocations in session. Escalate to business unit authority. Log threshold breach with timestamp and session details.',ref:'SOX IT General Controls | Internal FinOps Policy'},
+    {color:'var(--orange)',trigger:'TRIGGER: Session cost exceeds 3× rolling 7-day average',action:'ESCALATE to human review. Do not auto-terminate — allow in-flight work to complete. Flag for FinOps anomaly report.',ref:'Operational Risk Policy | DORA Art.17 ICT Incident Classification'},
+    {color:'var(--red)',trigger:'TRIGGER: Prohibited input detected (protected characteristic, PII without consent)',action:'BLOCK invocation. Return structured error to calling application. Log attempted input type (not content). Alert privacy officer if PII.',ref:'GDPR Art.9 Special Category | FCA Consumer Duty | EU AI Act Art.10'},
+    {color:'var(--cyan)',trigger:'TRIGGER: Regulatory reference tag missing from invocation metadata',action:'BLOCK invocation. Return configuration error. Invocations in regulated financial pipelines must carry regulatory reference. No tag = no inference.',ref:'MiFID II Art.25 | SOX Sec.404 Audit Trail Completeness'},
+    {color:'var(--purple)',trigger:'TRIGGER: Data lineage record not written before model invocation completes',action:'Flag output as UNVERIFIED. Queue for data lineage remediation. Do not surface to end user without lineage confirmation.',ref:'MiFID II Explainability | Basel III Model Documentation'},
+    {color:'var(--green)',trigger:'TRIGGER: All governance checks pass — nominal operation',action:'Log PASS for each gate with gate ID, timestamp, and session ID. Aggregate pass rates in FinOps governance dashboard.',ref:'All Frameworks — Positive Evidence for Examination'},
+  ];
+  document.getElementById('gateList').innerHTML = gates.map(g=>`
+    <div class="gate-item" style="border-left-color:${g.color}">
+      <div class="gate-trigger" style="color:${g.color}">${g.trigger}</div>
+      <div class="gate-action">${g.action}</div>
+      <div class="gate-ref">${g.ref}</div>
+    </div>`).join('');
+}
+
+// Init: build all checklists, set some defaults checked for a realistic initial score
+function init() {
+  Object.keys(REGS).forEach(regId => buildChecklist(regId));
+  // Pre-check some items to show a realistic non-zero state
+  const defaults = {
+    mifid:[0,4,7],sox:[2,3,6],basel:[2,4,8],dora:[0,5,6],fca:[0,2,7],euai:[0,4,6],gdpr:[0,3,5]
+  };
+  Object.entries(defaults).forEach(([regId,idxs])=>{
+    idxs.forEach(i=>{ checks[regId+'_'+i]=true; });
+    buildChecklist(regId);
+  });
+  updateScores();
+}
+
+init();
+switchReg('mifid', document.querySelector('.posture-card'), document.getElementById('tab-mifid'));
+</script>
+
+
+</body></html>

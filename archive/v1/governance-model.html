@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Governance Model | Bravo Governance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#0a0a0a;--off-white:#f4f2ed;--mid:#5a5a5a;--light:#9a9a9a;
+    --accent:#c8402a;--accent-2:#2a5c8a;--accent-3:#3a6b4a;
+    --panel:#111111;--panel-border:#2a2a2a;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--serif:'IBM Plex Serif',serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black);color:var(--off-white);font-family:var(--sans);font-size:15px;line-height:1.6;overflow-x:hidden;}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15;letter-spacing:-0.02em;}
+  h2{font-family:var(--sans);font-weight:500;font-size:1.15rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--off-white);}
+  h3{font-family:var(--mono);font-weight:400;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);}
+  h4{font-family:var(--sans);font-weight:500;font-size:1rem;color:var(--off-white);}
+  p{font-family:var(--sans);font-weight:300;color:#c8c4bc;line-height:1.75;}
+  a{text-decoration:none;}
+  .container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+  section{border-top:1px solid var(--panel-border);padding:4rem 0;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,0.97);border-bottom:1px solid var(--panel-border);backdrop-filter:blur(8px);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 2rem;max-width:1200px;margin:0 auto;}
+  .nav-brand{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--off-white);text-decoration:none;display:flex;align-items:center;gap:0.5rem;}
+  .nav-brand .br{color:var(--accent);}
+  .nav-links{display:flex;gap:1.75rem;list-style:none;}
+  .nav-links a{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);text-decoration:none;transition:color 0.2s;padding-bottom:2px;border-bottom:1px solid transparent;}
+  .nav-links a:hover,.nav-links a.active{color:var(--off-white);border-bottom-color:var(--accent-2);}
+  .nav-tag{font-family:var(--mono);font-size:0.62rem;color:var(--accent);border:1px solid var(--accent);padding:0.2rem 0.6rem;letter-spacing:0.1em;white-space:nowrap;}
+  .page-header{padding:7rem 0 4rem;border-top:none;background:repeating-linear-gradient(0deg,transparent,transparent 59px,var(--panel-border) 59px,var(--panel-border) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,var(--panel-border) 59px,var(--panel-border) 60px),var(--black);}
+  .page-label{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+  .page-label::before{content:'';display:block;width:2.5rem;height:1px;background:var(--accent);}
+  .page-intro{font-size:1rem;color:#9a9690;max-width:640px;border-left:2px solid var(--accent-2);padding-left:1.25rem;font-weight:300;line-height:1.75;margin-top:1.25rem;}
+  .callout{background:#0f1518;border:1px solid #1e2e38;border-left:3px solid var(--accent-2);padding:1.5rem 2rem;margin:2rem 0;}
+  .callout p{font-family:var(--serif);font-style:italic;font-size:0.95rem;color:#9ab0bc;}
+  .related-block{background:var(--panel);border:1px solid var(--panel-border);padding:1.5rem 2rem;margin-top:3rem;}
+  .related-block h3{margin-bottom:1rem;}
+  .related-links{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .related-link{font-family:var(--mono);font-size:0.65rem;color:var(--accent-2);border:1px solid var(--panel-border);padding:0.3rem 0.75rem;text-decoration:none;transition:border-color 0.2s,color 0.2s;}
+  .related-link:hover{border-color:var(--accent-2);color:var(--off-white);}
+  .pill{font-family:var(--mono);font-size:0.6rem;padding:0.2rem 0.55rem;border:1px solid;display:inline-block;}
+  .pill-complete{color:#3a6b4a;border-color:#3a6b4a;}
+  .pill-active{color:#2a5c8a;border-color:#2a5c8a;}
+  .pill-planned{color:#5a5a5a;border-color:#2a2a2a;}
+  footer{background:#050505;border-top:1px solid var(--panel-border);padding:4rem 0 2rem;}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+  .footer-brand-text{font-size:0.82rem;color:var(--mid);margin-top:0.75rem;max-width:280px;}
+  .footer-col h4{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid);margin-bottom:1rem;}
+  .footer-col ul{list-style:none;}
+  .footer-col ul li{padding:0.3rem 0;}
+  .footer-col ul li a{font-family:var(--mono);font-size:0.7rem;color:#4a4a4a;text-decoration:none;transition:color 0.2s;}
+  .footer-col ul li a:hover{color:var(--light);}
+  .footer-bottom{border-top:1px solid #1a1a1a;padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;}
+  .footer-bottom p{font-family:var(--mono);font-size:0.65rem;color:#3a3a3a;}
+  @media(max-width:960px){.footer-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:640px){.footer-grid{grid-template-columns:1fr;}.nav-links{display:none;}}
+
+  .def-block{display:grid;grid-template-columns:240px 1fr;gap:0;margin-bottom:1px;background:var(--panel-border);}
+  .def-label{background:var(--panel);padding:2rem;border-right:1px solid var(--panel-border);}
+  .def-label .def-num{font-family:var(--mono);font-size:1.8rem;color:var(--panel-border);font-weight:600;line-height:1;margin-bottom:0.5rem;}
+  .def-label h3{margin-bottom:0.4rem;font-size:0.62rem;}
+  .def-label h4{font-family:var(--serif);font-size:1.05rem;font-weight:300;color:var(--off-white);line-height:1.3;}
+  .def-body{background:var(--black);padding:2rem;}
+  .def-body p{margin-bottom:0.85rem;font-size:0.875rem;}
+  .def-body ul{list-style:none;margin-top:0.5rem;}
+  .def-body ul li{font-family:var(--mono);font-size:0.7rem;color:var(--mid);padding:0.3rem 0;border-bottom:1px solid #181818;display:flex;align-items:flex-start;gap:0.5rem;line-height:1.5;}
+  .def-body ul li::before{content:'→';color:var(--accent-2);flex-shrink:0;}
+  .cp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--panel-border);margin-top:2rem;}
+  .cp-cell{background:var(--panel);padding:1.75rem;}
+  .cp-cell h4{font-size:0.92rem;margin-bottom:0.6rem;}
+  .cp-cell p{font-size:0.8rem;}
+  .cp-cell ul{list-style:none;margin-top:0.5rem;}
+  .cp-cell ul li{font-family:var(--mono);font-size:0.65rem;color:var(--mid);padding:0.25rem 0;border-bottom:1px solid #181818;display:flex;align-items:center;gap:0.4rem;}
+  .cp-cell ul li::before{content:'—';color:var(--panel-border);}
+  .gate-flow{display:flex;flex-direction:column;gap:1px;}
+  .gate-step{background:var(--panel);display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:1.5rem;padding:1.25rem 1.5rem;}
+  .gate-num{font-family:var(--mono);font-size:0.7rem;color:var(--mid);text-align:center;}
+  .gate-content h4{font-size:0.85rem;margin-bottom:0.2rem;}
+  .gate-content p{font-size:0.78rem;}
+  .gate-out{font-family:var(--mono);font-size:0.62rem;padding:0.2rem 0.5rem;border:1px solid;white-space:nowrap;}
+  .go-pass{color:#3a6b4a;border-color:#3a6b4a;}.go-block{color:#c8402a;border-color:#c8402a;}.go-esc{color:#b8920a;border-color:#b8920a;}
+  .principles-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--panel-border);}
+  .pc{background:var(--panel);padding:2rem;}
+  .pc .pnum{font-family:var(--mono);font-size:0.62rem;color:var(--mid);display:block;margin-bottom:0.4rem;}
+  .pc h4{font-family:var(--serif);font-weight:300;font-size:1rem;color:var(--off-white);margin-bottom:0.75rem;line-height:1.4;}
+  .pc p{font-size:0.82rem;}
+  /* VISUAL GRAPH */
+  .gov-graph{width:100%;height:380px;background:var(--panel);border:1px solid var(--panel-border);position:relative;overflow:hidden;}
+  .gov-graph svg{width:100%;height:100%;}
+  .gnp{position:absolute;bottom:1rem;left:1rem;background:#0f0f0f;border:1px solid var(--panel-border);border-left:3px solid var(--accent-2);padding:1.25rem 1.5rem;display:none;max-width:420px;z-index:10;}
+  .gnp.vis{display:block;}
+  .gnp-title{font-family:var(--mono);font-size:0.72rem;color:var(--accent-2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;}
+  .gnp-desc{font-size:0.82rem;color:#b0aa9e;line-height:1.6;margin-bottom:0.75rem;}
+  .gnp-link{font-family:var(--mono);font-size:0.65rem;color:var(--accent-2);}
+  @media(max-width:960px){.def-block{grid-template-columns:1fr;}.def-label{border-right:none;border-bottom:1px solid var(--panel-border);}.principles-grid{grid-template-columns:1fr;}.cp-grid{grid-template-columns:1fr;}.gate-step{grid-template-columns:36px 1fr;}.gate-out{display:none;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand"><span class="br">[</span>BRAVO<span class="br">]</span>&nbsp;&nbsp;Agentic Governance Architecture</a>
+    <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="project-reference.html">Stack</a></li><li><a href="governance-model.html" class="active">Governance</a></li><li><a href="sector-applicability.html">Sectors</a></li><li><a href="build-status.html">Build Log</a></li></ul>
+    <span class="nav-tag">v0.4.3 — ACTIVE BUILD</span>
+  </div>
+</nav>
+<section class="page-header" style="border-top:none;">
+  <div class="container">
+    <div class="page-label">Governance Model — Framework Reference</div>
+    <h1>Agentic Governance<br>Architecture Framework</h1>
+    <p class="page-intro">A formal specification of the structural components that constitute a governed AI agent system. These definitions establish precise, shared terminology for architectural design, regulatory engagement, and operational accountability.</p>
+  </div>
+</section>
+
+<section style="background:#0d0d0d;padding-top:3rem;">
+  <div class="container">
+    <h3 style="margin-bottom:2rem;">Core Component Definitions</h3>
+    <div class="callout"><p>"Governance in AI systems is not a set of rules applied on top of a working system. It is a set of structural properties designed into the system from the beginning."</p></div>
+
+    <div style="margin-top:2rem;">
+      <div class="def-block">
+        <div class="def-label"><div class="def-num">01</div><h3>Component</h3><h4>What is an Agent?</h4></div>
+        <div class="def-body">
+          <p>An <strong style="color:var(--off-white);">agent</strong> is an autonomous or semi-autonomous software process that uses a large language model to interpret instructions, select tools, and execute multi-step tasks without requiring continuous human direction for each individual step.</p>
+          <p>In a governed system, agents operate within explicitly defined boundary conditions: what tools they can access, what data they can read or write, what spending authority they hold, and what escalation conditions apply. These boundaries are enforced at the infrastructure layer, not the prompt layer.</p>
+          <ul><li>Defined tool access scope, data permissions, and spend authority at instantiation</li><li>Actions logged at infrastructure layer — not application layer</li><li>Escalation conditions are structural, not discretionary</li></ul>
+        </div>
+      </div>
+      <div class="def-block">
+        <div class="def-label"><div class="def-num">02</div><h3>Component</h3><h4>What is a Governance Layer?</h4></div>
+        <div class="def-body">
+          <p>A <strong style="color:var(--off-white);">governance layer</strong> is the set of structural controls that sit between agent execution and production systems. It is not a dashboard, a policy document, or a set of review meetings — it is executable infrastructure that enforces constraints at runtime.</p>
+          <p>The governance layer operates independently of agent logic. An agent cannot bypass its governance layer by reasoning around it, because the governance layer is not part of the agent's reasoning context — it is part of the infrastructure the agent runs on.</p>
+          <ul><li>Pre-execution tool call interception and validation</li><li>Post-execution output classification and policy evaluation</li><li>Operates at infrastructure layer — not accessible to agent reasoning</li></ul>
+        </div>
+      </div>
+      <div class="def-block">
+        <div class="def-label"><div class="def-num">03</div><h3>Component</h3><h4>What is a Control Plane?</h4></div>
+        <div class="def-body">
+          <p>The <strong style="color:var(--off-white);">control plane</strong> is the supervisory infrastructure that governs how agents are configured, deployed, updated, and terminated. It manages model version selection, tool permission sets, spend authority thresholds, and the criteria that trigger human-in-the-loop escalation.</p>
+          <p>Critically, the control plane is not controlled by the agents it governs. Changes to control plane configuration require a separate authorisation process — not available to agent self-modification.</p>
+          <ul><li>Model version and parameter configuration management</li><li>Tool permission set assignment by agent role</li><li>Spend authority threshold definition and enforcement</li><li>Human escalation criteria definition</li></ul>
+        </div>
+      </div>
+      <div class="def-block">
+        <div class="def-label"><div class="def-num">04</div><h3>Component</h3><h4>What is Cost Instrumentation?</h4></div>
+        <div class="def-body">
+          <p><strong style="color:var(--off-white);">Cost instrumentation</strong> is the deliberate capture and classification of AI operational expenditure at the transaction level. It treats every model invocation as a billable event with associated metadata — not as undifferentiated infrastructure cost.</p>
+          <p>Unexpected cost spikes are frequently early indicators of agent misbehaviour — infinite reasoning loops, context window mismanagement, or unintended re-processing. Real-time cost monitoring is therefore a system health function as much as a financial control.</p>
+          <ul><li>Per-invocation capture: model_id, tokens_in, tokens_out, cost_usd</li><li>Threshold alerts trigger governance review before costs escalate</li><li>Cost anomaly detection as a system health indicator</li></ul>
+        </div>
+      </div>
+      <div class="def-block">
+        <div class="def-label"><div class="def-num">05</div><h3>Component</h3><h4>What is Policy Gating?</h4></div>
+        <div class="def-body">
+          <p><strong style="color:var(--off-white);">Policy gating</strong> is the mechanism by which governance rules are enforced at specific decision points in an agent workflow. Gates are defined in code and enforced at the infrastructure layer — not in system prompts that can be reasoned around.</p>
+          <p>Gates can block actions that exceed defined parameters: spending over threshold, accessing data outside approved scope, generating sensitive outputs without approval, or executing irreversible operations without explicit sign-off.</p>
+          <ul><li>Pre-execution: validates proposed tool calls against policy definitions</li><li>Implemented at MCP/infrastructure layer — not in system prompts</li><li>PASS / BLOCK / ESCALATE decisions recorded in audit trail</li></ul>
+        </div>
+      </div>
+      <div class="def-block">
+        <div class="def-label"><div class="def-num">06</div><h3>Component</h3><h4>What is Audit Traceability?</h4></div>
+        <div class="def-body">
+          <p><strong style="color:var(--off-white);">Audit traceability</strong> is the capacity to reconstruct, after the fact and under examination, the complete sequence of decisions, tool calls, model responses, and data accesses that produced a given output.</p>
+          <p>The Bravo architecture writes immutable audit records at the infrastructure layer rather than the application layer. This means audit trails cannot be bypassed or modified by agent logic. Records are appended before tool execution begins.</p>
+          <ul><li>Append-only schema: no UPDATE or DELETE operations permitted</li><li>Structured fields enable reconstruction of complete execution sequence</li><li>Input/output hashes enable tamper detection</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h3 style="margin-bottom:0.75rem;">Component Relationship Graph</h3>
+    <h2 style="margin-bottom:2rem;">Governance Architecture — Visual Map</h2>
+    <div class="gov-graph" id="govGraph">
+      <svg id="govSvg"></svg>
+      <div class="gnp" id="govPanel">
+        <div class="gnp-title" id="govPanelTitle"></div>
+        <div class="gnp-desc" id="govPanelDesc"></div>
+        <a class="gnp-link" id="govPanelLink" href="#">View Detail →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#0d0d0d;">
+  <div class="container">
+    <h3 style="margin-bottom:0.75rem;">Policy Gate — Execution Flow</h3>
+    <h2 style="margin-bottom:2rem;">Step-by-Step Gate Evaluation</h2>
+    <div class="gate-flow">
+      <div class="gate-step"><div class="gate-num">01</div><div class="gate-content"><h4>Agent proposes tool call</h4><p>Agent reasoning produces a tool_use request. The MCP SDK intercepts before execution.</p></div><div class="gate-out go-pass">INTERCEPTED</div></div>
+      <div class="gate-step"><div class="gate-num">02</div><div class="gate-content"><h4>Schema validation</h4><p>Input parameters validated against tool JSON Schema. Malformed parameters rejected at protocol layer.</p></div><div class="gate-out go-block">REJECT IF INVALID</div></div>
+      <div class="gate-step"><div class="gate-num">03</div><div class="gate-content"><h4>Permission scope check</h4><p>Tool call evaluated against agent's approved tool permission set from control plane configuration.</p></div><div class="gate-out go-block">BLOCK IF OOB</div></div>
+      <div class="gate-step"><div class="gate-num">04</div><div class="gate-content"><h4>Spend authority check</h4><p>Estimated cost checked against agent's remaining spend authority. Threshold exceedance triggers escalation.</p></div><div class="gate-out go-esc">ESCALATE IF OVER</div></div>
+      <div class="gate-step"><div class="gate-num">05</div><div class="gate-content"><h4>Policy evaluation</h4><p>Full policy engine evaluation against all applicable governance rules, data access policies, and timing restrictions.</p></div><div class="gate-out go-block">BLOCK IF FAIL</div></div>
+      <div class="gate-step"><div class="gate-num">06</div><div class="gate-content"><h4>Pre-execution audit record written</h4><p>Before tool execution, an audit record is written to PostgreSQL with all gate evaluation results.</p></div><div class="gate-out go-pass">RECORD WRITTEN</div></div>
+      <div class="gate-step"><div class="gate-num">07</div><div class="gate-content"><h4>Tool execution proceeds</h4><p>All gates passed. Tool handler invoked with validated parameters. Result captured.</p></div><div class="gate-out go-pass">EXECUTE</div></div>
+      <div class="gate-step"><div class="gate-num">08</div><div class="gate-content"><h4>Post-execution audit + cost record</h4><p>Post-execution record written with actual token counts, actual cost, and output hash.</p></div><div class="gate-out go-pass">AUDIT COMPLETE</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h3 style="margin-bottom:0.75rem;">Governance Principles</h3>
+    <h2 style="margin-bottom:2rem;">Seven Principles of Governed AI Infrastructure</h2>
+    <div class="principles-grid">
+      <div class="pc"><span class="pnum">PRINCIPLE 01</span><h4>Governance is infrastructure, not instruction.</h4><p>Control mechanisms must be implemented at the infrastructure layer — in code, schemas, and permission systems — not in system prompts that can be overridden by model reasoning.</p></div>
+      <div class="pc"><span class="pnum">PRINCIPLE 02</span><h4>Every agent action is auditable by design, not by retrofit.</h4><p>The data structures, logging pathways, and record schemas that enable audit must be part of the original architecture. Retrofitted audit systems create exploitable gaps.</p></div>
+      <div class="pc"><span class="pnum">PRINCIPLE 03</span><h4>Cost is a first-class governance signal.</h4><p>AI operational expenditure is a real-time indicator of system behaviour, model efficiency, and architectural fitness. Governed systems treat cost telemetry as equivalent in importance to error rate and latency.</p></div>
+      <div class="pc"><span class="pnum">PRINCIPLE 04</span><h4>Authority is minimised, not maximised.</h4><p>The default permission state for any agent is the minimum required for its defined task. Capability expansion requires explicit governance decisions, not configuration omissions.</p></div>
+      <div class="pc"><span class="pnum">PRINCIPLE 05</span><h4>Human oversight is structural, not optional.</h4><p>In high-consequence domains, human review gates must be embedded in the workflow architecture. They cannot depend on agent discretion about when to escalate.</p></div>
+      <div class="pc"><span class="pnum">PRINCIPLE 06</span><h4>Model versions are configuration, not defaults.</h4><p>Automatically updating to the latest model version introduces uncontrolled change into governed systems. Model selection is a configuration management decision with compliance implications.</p></div>
+      <div class="pc" style="grid-column:1/-1;"><span class="pnum">PRINCIPLE 07</span><h4>Transparency is a structural property, not a communication strategy.</h4><p>Build transparency, decision transparency, and operational transparency must be embedded in the architecture through logging, documentation requirements, and formal reporting processes. Transparency achieved through voluntary communication is insufficient for governance purposes.</p></div>
+    </div>
+    <div class="related-block">
+      <h3>Related Pages</h3>
+      <div class="related-links">
+        <a href="project-reference.html" class="related-link">Project Reference</a>
+        <a href="layer-control-plane.html" class="related-link">Control Plane</a>
+        <a href="layer-feedback.html" class="related-link">Feedback &amp; Telemetry</a>
+        <a href="layer-tools.html" class="related-link">Tool Layer</a>
+        <a href="sector-applicability.html" class="related-link">Sector Applications</a>
+        <a href="build-status.html" class="related-link">Build Status</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const gNodes=[
+  {id:'agent',x:400,y:60,r:20,label:'Agent',color:'#c8402a',desc:'Autonomous process using LLM to execute multi-step tasks within defined boundary conditions.',link:'#'},
+  {id:'gov',x:200,y:180,r:17,label:'Gov Layer',color:'#7a5cb8',desc:'Structural controls sitting between agent execution and production systems. Executable infrastructure.',link:'layer-control-plane.html'},
+  {id:'ctrl',x:600,y:180,r:17,label:'Control Plane',color:'#7a5cb8',desc:'Supervisory infrastructure managing agent configuration, deployment, and termination.',link:'layer-control-plane.html'},
+  {id:'cost',x:100,y:300,r:15,label:'Cost Instr.',color:'#2a5c8a',desc:'Per-invocation capture of AI operational expenditure. track_ai_cost tool.',link:'layer-tools.html'},
+  {id:'gate',x:300,y:310,r:15,label:'Policy Gate',color:'#b8920a',desc:'Conditional checks at workflow decision points. PASS / BLOCK / ESCALATE decisions.',link:'layer-control-plane.html'},
+  {id:'audit',x:500,y:310,r:15,label:'Audit Log',color:'#3a6b4a',desc:'Immutable append-only records at infrastructure layer. PostgreSQL backend.',link:'layer-infrastructure.html'},
+  {id:'feed',x:700,y:300,r:15,label:'Feedback',color:'#5a9a8a',desc:'Cost signals, error rates, and policy violations feeding governance decisions.',link:'layer-feedback.html'},
+  {id:'human',x:400,y:340,r:13,label:'Human Review',color:'#9a6a2a',desc:'Escalation pathway for high-consequence decisions. Structural, not optional.',link:'layer-control-plane.html'},
+];
+const gEdges=[['agent','gov'],['agent','ctrl'],['gov','gate'],['gov','cost'],['ctrl','gate'],['ctrl','audit'],['gate','audit'],['gate','human'],['cost','feed'],['audit','feed'],['feed','ctrl']];
+const gsvg=document.getElementById('govSvg'),gwrap=document.getElementById('govGraph');
+const gPanel=document.getElementById('govPanel'),gPTitle=document.getElementById('govPanelTitle'),gPDesc=document.getElementById('govPanelDesc'),gPLink=document.getElementById('govPanelLink');
+function gsx(x){return(x/800)*gwrap.clientWidth;}
+function gsy(y){return(y/380)*gwrap.clientHeight;}
+function buildGov(){
+  gsvg.innerHTML='';
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML='<filter id="gglow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  gsvg.appendChild(defs);
+  const eg=document.createElementNS('http://www.w3.org/2000/svg','g');
+  gEdges.forEach(([a,b])=>{
+    const na=gNodes.find(n=>n.id===a),nb=gNodes.find(n=>n.id===b);
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',gsx(na.x));l.setAttribute('y1',gsy(na.y));
+    l.setAttribute('x2',gsx(nb.x));l.setAttribute('y2',gsy(nb.y));
+    l.setAttribute('stroke','#2a2a2a');l.setAttribute('stroke-width','1.5');
+    l.setAttribute('class','gg-edge');l.dataset.a=a;l.dataset.b=b;
+    eg.appendChild(l);
+  });
+  gsvg.appendChild(eg);
+  gNodes.forEach(n=>{
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor='pointer';
+    const cx=gsx(n.x),cy=gsy(n.y);
+    const ring=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    ring.setAttribute('cx',cx);ring.setAttribute('cy',cy);ring.setAttribute('r',n.r+4);
+    ring.setAttribute('fill','none');ring.setAttribute('stroke',n.color);ring.setAttribute('stroke-width','1');ring.setAttribute('opacity','0.2');
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',n.r);
+    c.setAttribute('fill',n.color+'1a');c.setAttribute('stroke',n.color);c.setAttribute('stroke-width','1.5');c.setAttribute('filter','url(#gglow)');
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',cx);t.setAttribute('y',cy+n.r+12);
+    t.setAttribute('text-anchor','middle');t.setAttribute('fill','#6a6a6a');t.setAttribute('font-size','9.5');t.setAttribute('font-family','IBM Plex Mono,monospace');
+    t.textContent=n.label;
+    g.appendChild(ring);g.appendChild(c);g.appendChild(t);
+    g.addEventListener('mouseenter',()=>{document.querySelectorAll('.gg-edge').forEach(e=>{if(e.dataset.a===n.id||e.dataset.b===n.id){e.setAttribute('stroke',n.color);e.setAttribute('stroke-width','2.5');}});c.setAttribute('fill',n.color+'40');});
+    g.addEventListener('mouseleave',()=>{document.querySelectorAll('.gg-edge').forEach(e=>{e.setAttribute('stroke','#2a2a2a');e.setAttribute('stroke-width','1.5');});c.setAttribute('fill',n.color+'1a');});
+    g.addEventListener('click',()=>{gPTitle.textContent=n.label;gPDesc.textContent=n.desc;gPLink.href=n.link;gPLink.textContent='View Detail →';gPanel.classList.add('vis');});
+    gsvg.appendChild(g);
+  });
+}
+buildGov();window.addEventListener('resize',buildGov);
+document.addEventListener('click',e=>{if(!e.target.closest('#govGraph'))gPanel.classList.remove('vis');});
+</script>
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="nav-brand" style="margin-bottom:0.75rem;"><span class="br" style="color:var(--accent);">[</span>BRAVO<span class="br" style="color:var(--accent);">]</span>&nbsp;Agentic Governance Architecture</a>
+        <p class="footer-brand-text">A Team Bravo Initiative under Systems Thinking for AI. Architecture-first. Governance-native. Built for regulated environments.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Architecture</h4>
+        <ul>
+          <li><a href="project-reference.html">Project Reference</a></li>
+          <li><a href="governance-model.html">Governance Model</a></li>
+          <li><a href="layer-runtime.html">Runtime Layer</a></li>
+          <li><a href="layer-tools.html">Tool Layer</a></li>
+          <li><a href="layer-infrastructure.html">Infrastructure</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Sectors</h4>
+        <ul>
+          <li><a href="sector-applicability.html">All Sectors</a></li>
+          <li><a href="sector-financial.html">Financial</a></li>
+          <li><a href="sector-legal.html">Legal</a></li>
+          <li><a href="sector-healthcare.html">Healthcare</a></li>
+          <li><a href="sector-government.html">Government</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Build</h4>
+        <ul>
+          <li><a href="build-status.html">Sprint Log</a></li>
+          <li><a href="build-status.html#roadmap">Roadmap</a></li>
+          <li><a href="layer-control-plane.html">Control Plane</a></li>
+          <li><a href="layer-feedback.html">Feedback &amp; Telemetry</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Bravo Agentic Governance Architecture &middot; Team Bravo Initiative &middot; divergence-MCP</p>
+      <p>BUILD v0.4.3 &mdash; PHASE 2 ACTIVE</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
